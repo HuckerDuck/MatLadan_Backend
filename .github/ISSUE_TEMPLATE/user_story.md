@@ -7,9 +7,9 @@ assignees: ""
 ---
 
 ## 👤 User Story
-Som **[roll/användare/utvecklare]**  
-vill jag **[göra detta]**  
-för att **[uppnå detta mål]**.
+Som en användare 
+vill jag (göra)
+för att (mål)
 
 ## ✅ Vad ska göras och vad är minsta möjliga för att vara acceptabelt?
 - [ ] Tydliga och mätbara krav
