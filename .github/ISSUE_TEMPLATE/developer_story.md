@@ -6,7 +6,7 @@ labels: story
 assignees: ""
 ---
 
-## 👤 User Story
+## 👤 Utvecklar Story
 Som en utvecklare
 vill jag (göra)
 för att (mål)
