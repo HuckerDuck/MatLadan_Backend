@@ -9,8 +9,12 @@ assignees: ""
 ## 📝 Beskrivning
 Beskriv kort vad som ska göras och varför.
 
-## ✅ Acceptanskriterier
+## ✅ Acceptanskriterier 
 - [ ] Vad ska vara färdigt för att tasken anses klar
+
+## 📌 Framtida förslag? 
+
+
 
 ## ⏳ Hur lång tid kommer det att ta?
 (Ungefärlig tid eller story points)
