@@ -5,11 +5,14 @@ import com.fredrik.matladan.user.dto.CustomUserResponseDTO;
 import com.fredrik.matladan.user.mapper.CustomUserMapper;
 import com.fredrik.matladan.user.model.CustomUser;
 import com.fredrik.matladan.user.repository.CustomUserRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
+
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class CustomUserServiceImpl implements CustomUserService{
     private final CustomUserRepository repository;
     private final CustomUserMapper mapper;
@@ -27,12 +30,12 @@ public class CustomUserServiceImpl implements CustomUserService{
 
     @Override
     //? This is used in case there are problems during the creating method
-    //? If there is an error then Spring will roll back the changes
+    //? If there is an error, then Spring will roll back the changes
     //? Nothing is then added to the database
     @Transactional
     public CustomUserResponseDTO createUser (CreateUserDTO createUserDTO){
         //? Trim is nice and is used to remove spaces from the username
-        //? Makes " Fredrik  " into "Fredrik"
+        //? Makes " Fredrik " into "Fredrik"
         //? Also makes sure that the username is unique
         String trimmedUsername = createUserDTO.username().trim();
         String toLowerCaseEmail = createUserDTO.email().toLowerCase();
