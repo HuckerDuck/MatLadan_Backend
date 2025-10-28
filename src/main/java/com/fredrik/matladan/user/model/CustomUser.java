@@ -26,7 +26,7 @@ public class CustomUser {
     private String username;
 
     // Hashed password so that you can directly see what is written
-    @Column(name = "password_hash", unique = true, nullable = false)
+    @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
     @Column(unique = true, nullable = false)
@@ -53,6 +53,14 @@ public class CustomUser {
     @Column (name = "updated_at", nullable = false)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
+    public CustomUser(String username, String passwordHash, String email) {
+        this.username = username;
+        this.passwordHash = passwordHash;
+        this.email = email;
+    }
 
-
+    public CustomUser(String username, String email) {
+        this.username = username;
+        this.email = email;
+    }
 }
