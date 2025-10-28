@@ -63,4 +63,19 @@ public class CustomUser {
         this.username = username;
         this.email = email;
     }
+
+    //? This is used to let the database know when a User is created
+    //? Spring will automaticly fill this in
+    @PrePersist
+    void onCreatingUser(){
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = this.createdAt;
+    }
+
+    //? This is used to let the database know when a User is updated
+    //? Spring will automaticly fill this in
+    @PreUpdate
+    void onUpdatingUser(){
+        this.updatedAt = LocalDateTime.now();
+    }
 }
