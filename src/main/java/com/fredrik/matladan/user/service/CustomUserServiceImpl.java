@@ -8,6 +8,8 @@ import com.fredrik.matladan.user.repository.CustomUserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Optional;
+
 public class CustomUserServiceImpl implements CustomUserService{
     private final CustomUserRepository repository;
     private final CustomUserMapper mapper;
@@ -60,19 +62,79 @@ public class CustomUserServiceImpl implements CustomUserService{
         return mapper.toResponseDTO(savedUser);
     }
 
+    //?
+    //? Find a User by username
+    //?
+
     @Override
+    @Transactional
     public CustomUserResponseDTO findByUsername(String username) {
-        return null;
-    }
+        String trimmedUsername = username.trim();
+
+        Optional<CustomUser> user = repository.findByUsername(trimmedUsername);
+
+        //? Check if the user exists or not
+        if (user.isEmpty()){
+            throw new RuntimeException("User does not exist");
+        }
+
+        return mapper.toResponseDTO(user.get());
+     }
+
+
+    //?
+    //? Update the email of a User
+    //?
 
     @Override
+    @Transactional
     public CustomUserResponseDTO updateEmail(String username, String email) {
-        return null;
+        String trimmedUsername = username.trim();
+        String toLowerCaseEmail = email.toLowerCase();
+
+        Optional<CustomUser> user = repository.findByUsername(trimmedUsername);
+
+        //? Check if the user exists or not
+        if (user.isEmpty()){
+            throw new RuntimeException("User does not exist");
+        }
+
+        //? Make a check if the email already exist
+        if(repository.findByEmail(toLowerCaseEmail).isPresent()){
+            throw new RuntimeException("Email already exists in the database");
+        }
+
+        CustomUser updatedUser = user.get();
+        updatedUser.setEmail(toLowerCaseEmail);
+
+        CustomUser savedUser = repository.save(updatedUser);
+
+        return mapper.toResponseDTO(savedUser);
     }
 
-    @Override
-    public void disableUser(String username) {
+    //?
+    //? Disable a User
+    //?
 
+    @Override
+    @Transactional
+    public void disableUser(String username) {
+        String trimmedUsername = username.trim();
+
+        Optional<CustomUser> customUser = repository.findByUsername(trimmedUsername);
+
+        //? Check if the user exists or not
+        if (customUser.isEmpty()){
+            throw new RuntimeException("User does not exist");
+        }
+
+        CustomUser user = customUser.get();
+
+        //? Changes the boolean of the user to false
+        //? Therefore this mean that the user is disabled
+        user.setEnabled(false);
+
+        repository.save(user);
     }
 
 
