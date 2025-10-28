@@ -4,6 +4,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDateTime;
+
 public record CustomUserDTO(
         @NotNull
         @Size(min = 1, max = 50, message = "The Username needs atleast 1 letter")
