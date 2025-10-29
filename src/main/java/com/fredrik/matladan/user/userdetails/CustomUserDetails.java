@@ -39,6 +39,12 @@ public class CustomUserDetails implements UserDetails {
         return List.of(
                 new SimpleGrantedAuthority("ROLE_" + user.getRole())
         );
+
+        //! If you add a list of roles here instead.
+        //! Use a .foreach authorities.addall
+
+        //! For every role we had a new element
+        //! Use a Hashset in start as well
     }
 
     @Override

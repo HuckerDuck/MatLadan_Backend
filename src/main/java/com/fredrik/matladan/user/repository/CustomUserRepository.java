@@ -6,9 +6,10 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface CustomUserRepository extends JpaRepository<CustomUser, Long> {
+public interface CustomUserRepository extends JpaRepository<CustomUser, UUID> {
     Optional<CustomUser> findByUsername(String username);
     Optional<CustomUser> findByEmail(String email);
 }
