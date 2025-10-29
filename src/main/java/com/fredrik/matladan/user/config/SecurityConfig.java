@@ -7,6 +7,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 public class SecurityConfig {
     @Bean
@@ -16,14 +18,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain
-            (HttpSecurity httpSecurity) throws Exception {
-
-        httpSecurity
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .anyRequest().permitAll()
-                );
-        return httpSecurity.build();
+    public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests (auth -> auth
+                        .requestMatchers ("/", "/login").permitAll()
+                        .anyRequest().authenticated ()
+                )
+                .formLogin(withDefaults ());
+        return http.build();
     }
 }
