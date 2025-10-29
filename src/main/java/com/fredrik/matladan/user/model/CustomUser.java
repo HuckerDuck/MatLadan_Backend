@@ -46,6 +46,8 @@ public class CustomUser {
     //? Admin role or anything like that
     @Enumerated(EnumType.STRING)
     @Column (nullable = false)
+
+    //! Make a List of diffrent roles?
     private CustomUserRoleEnums role;
 
     //? When the User was created
