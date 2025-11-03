@@ -32,6 +32,7 @@ public class CustomUserServiceImpl implements CustomUserService{
     //? This is used in case there are problems during the creating method
     //? If there is an error, then Spring will roll back the changes
     //? Nothing is then added to the database
+
     @Transactional
     public CustomUserResponseDTO createUser (CreateUserDTO createUserDTO){
         //? Trim is nice and is used to remove spaces from the username
