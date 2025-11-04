@@ -4,10 +4,8 @@ import com.fredrik.matladan.user.dto.CreateUserDTO;
 import com.fredrik.matladan.user.dto.CustomUserResponseDTO;
 import com.fredrik.matladan.user.service.CustomUserService;
 import jakarta.validation.Valid;
-import org.hibernate.annotations.ConcreteProxy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,7 +37,7 @@ public class CustomUserController {
             @Valid @RequestBody CreateUserDTO createUserDTO
     ){
         CustomUserResponseDTO responseDTO = userService.createUser(createUserDTO);
-        return ResponseEntity.ok(responseDTO);
+        return ResponseEntity.status(201).body(responseDTO);
     }
 
     //

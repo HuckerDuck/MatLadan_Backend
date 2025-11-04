@@ -1,4 +1,7 @@
 package com.fredrik.matladan.user.advice.DTO;
 
-public class ValidationError {
+public record ValidationError (
+        String field,
+        String message
+) {
 }
