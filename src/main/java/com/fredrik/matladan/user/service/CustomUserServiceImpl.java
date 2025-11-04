@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -139,6 +140,16 @@ public class CustomUserServiceImpl implements CustomUserService{
         user.setEnabled(false);
 
         repository.save(user);
+    }
+
+    public List<CustomUserResponseDTO> getAllUsers(){
+        return repository.findAll()
+                //? Stream is used to convert the list to a stream
+                //? It will go through the list and add it to the stream
+                .stream()
+                //? Map is used to convert the stream to a list
+                .map(mapper::toResponseDTO)
+                .toList();
     }
 
 

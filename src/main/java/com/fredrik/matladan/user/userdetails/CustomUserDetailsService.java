@@ -3,12 +3,9 @@ package com.fredrik.matladan.user.userdetails;
 import com.fredrik.matladan.user.model.CustomUser;
 import com.fredrik.matladan.user.repository.CustomUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 //! Remember putting the bean @Service
 
@@ -37,6 +34,6 @@ public class CustomUserDetailsService implements org.springframework.security.co
                         "User with username " + username + " was not found"
                 ));
 
-        return new CustomUserDetails(customUser);
+        return new CustomUserDetailsImpl(customUser);
     }
 }
