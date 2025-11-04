@@ -2,6 +2,7 @@ package com.fredrik.matladan.user.service;
 
 import com.fredrik.matladan.user.dto.CreateUserDTO;
 import com.fredrik.matladan.user.dto.CustomUserResponseDTO;
+import com.fredrik.matladan.user.exceptions.UserAlreadyExistsException;
 import com.fredrik.matladan.user.mapper.CustomUserMapper;
 import com.fredrik.matladan.user.model.CustomUser;
 import com.fredrik.matladan.user.repository.CustomUserRepository;
@@ -44,7 +45,7 @@ public class CustomUserServiceImpl implements CustomUserService{
 
         //? Make a check if the Username already exists
         if (repository.findByUsername(trimmedUsername).isPresent()){
-            throw new RuntimeException("Username already exists in the database");
+            throw new UserAlreadyExistsException(createUserDTO.username());
         }
 
         //? Make a check if the email already exist
