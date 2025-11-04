@@ -1,6 +1,5 @@
 package com.fredrik.matladan.user.userdetails;
 
-import com.fredrik.matladan.user.enums.CustomUserRoleEnums;
 import com.fredrik.matladan.user.model.CustomUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -9,11 +8,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-public class CustomUserDetails implements UserDetails {
+public class CustomUserDetailsImpl implements UserDetails {
     private final CustomUser user;
-    private CustomUserRoleEnums role;
 
-    public CustomUserDetails(CustomUser user) {
+
+    public CustomUserDetailsImpl(CustomUser user) {
         this.user = user;
     }
 
@@ -54,9 +53,12 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return getUsername();
+        return "";
     }
 
+    public CustomUser getUser() {
+        return user;
+    }
     @Override
     public boolean isAccountNonExpired() {
         return user.getEnabled();

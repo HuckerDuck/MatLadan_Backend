@@ -3,6 +3,8 @@ package com.fredrik.matladan.user.service;
 import com.fredrik.matladan.user.dto.CreateUserDTO;
 import com.fredrik.matladan.user.dto.CustomUserResponseDTO;
 
+import java.util.List;
+
 public interface CustomUserService {
     //? Create a new User (with hashed password, save it and return a safe response)
     CustomUserResponseDTO createUser(CreateUserDTO createUserDTO);
@@ -15,4 +17,6 @@ public interface CustomUserService {
 
     //? Disable a User
     void disableUser(String username);
+
+    List<CustomUserResponseDTO> getAllUsers();
 }
