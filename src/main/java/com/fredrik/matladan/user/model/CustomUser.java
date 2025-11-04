@@ -4,6 +4,7 @@ import com.fredrik.matladan.user.enums.CustomUserRoleEnums;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Setter
 @Getter
@@ -18,8 +19,10 @@ public class CustomUser {
 
     //? ID inside the database, the database sets this so we don't need to
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Setter (AccessLevel.NONE)
+    @Column (updatable = false, nullable = false)
+    private UUID id;
 
     //? Unique Username that is sent to the database
     @Column(unique = true, nullable = false)
@@ -36,33 +39,25 @@ public class CustomUser {
     //? No more need to delete it from the database
     //? The account will be enabled as a standard
     @Column(nullable = false)
-    private Boolean enabled = true;
+    private Boolean enabled;
 
     //? Adding a way to add a roles
     //? For the User I only want it to have the User not not like an
     //? Admin role or anything like that
     @Enumerated(EnumType.STRING)
     @Column (nullable = false)
-    private CustomUserRoleEnums role = CustomUserRoleEnums.USER;
+
+    //! Make a List of diffrent roles?
+    private CustomUserRoleEnums role;
 
     //? When the User was created
+    @Setter (AccessLevel.NONE)
     @Column (name = "created_at", nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 
     //? When a User was updated and changed
     @Column (name = "updated_at", nullable = false)
-    private LocalDateTime updatedAt = LocalDateTime.now();
-
-    public CustomUser(String username, String passwordHash, String email) {
-        this.username = username;
-        this.passwordHash = passwordHash;
-        this.email = email;
-    }
-
-    public CustomUser(String username, String email) {
-        this.username = username;
-        this.email = email;
-    }
+    private LocalDateTime updatedAt;
 
     //? This is used to let the database know when a User is created
     //? Spring will automaticly fill this in
@@ -70,6 +65,15 @@ public class CustomUser {
     void onCreatingUser(){
         this.createdAt = LocalDateTime.now();
         this.updatedAt = this.createdAt;
+
+        //? Check if enabled is null then set it to true
+        if(enabled == null){
+            this.enabled = true;
+        }
+
+        if (role == null){
+            this.role = CustomUserRoleEnums.USER;
+        }
     }
 
     //? This is used to let the database know when a User is updated
