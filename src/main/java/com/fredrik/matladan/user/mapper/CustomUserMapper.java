@@ -8,12 +8,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomUserMapper {
     //? Till entit
+
+    //! Small change here,
+    //! Was returning the password which I don't wanna do
+    //! So I changed that
     public CustomUser toEntity(CreateUserDTO createUserDTO) {
-        return new CustomUser(
-                createUserDTO.username(),
-                createUserDTO.password(),
-                createUserDTO.email()
-        );
+        CustomUser customUser = new CustomUser();
+        customUser.setUsername(createUserDTO.username());
+        customUser.setEmail(createUserDTO.email());
+
+        return customUser;
     }
 
     public CustomUserResponseDTO toResponseDTO(CustomUser customUser) {
