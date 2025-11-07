@@ -10,7 +10,6 @@ public record ApiErrorResponse(
         //? Like /api/users/register
         String path,
         int status,
-        String error,
         List<ValidationError> errorDetailList
 
 ){

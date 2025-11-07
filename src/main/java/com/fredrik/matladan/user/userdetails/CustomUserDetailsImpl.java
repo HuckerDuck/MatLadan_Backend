@@ -53,7 +53,7 @@ public class CustomUserDetailsImpl implements UserDetails {
 
     @Override
     public String getUsername() {
-        return "";
+        return user.getUsername();
     }
 
     public CustomUser getUser() {
@@ -61,21 +61,23 @@ public class CustomUserDetailsImpl implements UserDetails {
     }
     @Override
     public boolean isAccountNonExpired() {
-        return user.getEnabled();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
+
         return UserDetails.super.isAccountNonLocked();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
+
         return UserDetails.super.isCredentialsNonExpired();
     }
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return user.getEnabled();
     }
 }

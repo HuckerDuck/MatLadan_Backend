@@ -28,7 +28,9 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests (auth -> auth
-                        .requestMatchers ("/api/users/register").authenticated()
+                        //? Anywone is allowed to create a account
+                        //? It will automaticly be a user with the role USER
+                        .requestMatchers ("/api/users/register").permitAll()
                         .anyRequest().authenticated ()
                 )
                 .formLogin(form -> form.disable())

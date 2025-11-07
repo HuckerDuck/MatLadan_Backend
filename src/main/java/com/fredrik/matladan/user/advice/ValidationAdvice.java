@@ -45,7 +45,6 @@ public class ValidationAdvice {
                         LocalDateTime.now(),
                         request.getRequestURI(),
                         HttpStatus.BAD_REQUEST.value(),
-                        exception.getMessage(),
                         errorDetailList
                 )
         );
@@ -62,7 +61,6 @@ public class ValidationAdvice {
                 LocalDateTime.now(),
                 request.getRequestURI(),
                 HttpStatus.CONFLICT.value(),
-                exception.getMessage(),
                 List.of()
         );
 
