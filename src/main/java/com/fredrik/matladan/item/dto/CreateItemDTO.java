@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDate;
+
 public record CreateItemDTO (
         @NotNull
         @Size(min = 1, max = 50, message = "The name of the item needs to be atleast 1 charecter")
@@ -22,6 +24,8 @@ public record CreateItemDTO (
         double sizeOfUnit,
 
         @NotNull (message = "You need to specify how much there if of this")
-        UnitAmountType unitAmountType
+        UnitAmountType unitAmountType,
+
+        LocalDate expiryDate
 ) {
 }

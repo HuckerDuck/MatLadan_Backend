@@ -2,9 +2,9 @@ package com.fredrik.matladan.item.enums;
 
 public enum UnitAmountType {
     //? Volym
-    Liter,
+    LITER,
     DECILITER,
-    MILILITER,
+    MILLILITER,
 
     //? Weight
     KILOGRAM,
