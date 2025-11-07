@@ -8,5 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface ItemRepository extends JpaRepository <Item, Long> {
-    Optional<Item> findItemByIdAndWithStorageOwnerID(Long id, UUID storageOwnerID);
+    Optional<Item> findByIdAndStorageOwner_Id(Long id, UUID storageOwnerID);
 }

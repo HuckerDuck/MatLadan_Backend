@@ -7,11 +7,14 @@ import com.fredrik.matladan.item.entity.Item;
 import com.fredrik.matladan.item.enums.StorageLocation;
 import com.fredrik.matladan.item.mapper.ItemMapper;
 import com.fredrik.matladan.item.repository.ItemRepository;
+import com.fredrik.matladan.user.dto.CustomUserResponseDTO;
 import com.fredrik.matladan.user.model.CustomUser;
 import com.fredrik.matladan.user.repository.CustomUserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ItemServiceImpl implements ItemService{
@@ -54,6 +57,14 @@ public class ItemServiceImpl implements ItemService{
     @Override
     public void deleteItem(Long id) {
 
+    }
+
+    @Override
+    public List<ItemResponseDTO> getAllItems() {
+        return itemRepository.findAll()
+                .stream()
+                .map(itemMapper::toResponseDTO)
+                .toList();
     }
 
     //? Helping method to make sure that the fridge items has an expiry date

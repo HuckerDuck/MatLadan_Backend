@@ -4,6 +4,8 @@ import com.fredrik.matladan.item.dto.CreateItemDTO;
 import com.fredrik.matladan.item.dto.ItemResponseDTO;
 import com.fredrik.matladan.item.dto.UpdateItemDTO;
 
+import java.util.List;
+
 public interface ItemService {
     //? Create a new Item
     ItemResponseDTO createItem(CreateItemDTO createItemDTO);
@@ -13,4 +15,7 @@ public interface ItemService {
 
     //? Delete an item
     void deleteItem(Long id);
+
+    //? Get all items
+    List<ItemResponseDTO> getAllItems();
 }
