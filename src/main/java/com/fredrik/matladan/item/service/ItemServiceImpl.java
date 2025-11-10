@@ -104,7 +104,7 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public UpdateItemDTO updateItemFromCurrentUser(Long id, UpdateItemDTO updateItemDTO) {
+    public ItemResponseDTO updateItemFromCurrentUser(Long id, UpdateItemDTO updateItemDTO) {
         CustomUser currentUser = getCurrentUser();
 
         Item item = itemRepository.findByIdAndStorageOwner_Id(id, currentUser.getId()).
@@ -118,7 +118,7 @@ public class ItemServiceImpl implements ItemService{
 
         Item updatedItem = itemRepository.save(item);
 
-        return itemMapper.toUpdateDTO(updatedItem);
+        return itemMapper.toResponseDTO(updatedItem);
     }
 
     //? Delete item from the database with the id from the item

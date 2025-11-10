@@ -25,7 +25,7 @@ public interface ItemService {
     Page<ItemResponseDTO> searchItemsByName(String itemName, Pageable pageable);
 
     //? Update an item
-    UpdateItemDTO updateItemFromCurrentUser(Long id, UpdateItemDTO updateItemDTO);
+    ItemResponseDTO updateItemFromCurrentUser(Long id, UpdateItemDTO updateItemDTO);
 
     //? Delete an item
     void deleteItem(Long id);

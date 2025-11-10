@@ -12,6 +12,6 @@ public record ItemResponseDTO (
         LocalDate addedDate,
         Integer quantity,
         double sizeOfUnit,
-        UnitAmountType unitAmountType
+        UnitAmountType unitAmount
 ) {
 }
