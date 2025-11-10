@@ -7,26 +7,24 @@ import com.fredrik.matladan.item.entity.Item;
 import com.fredrik.matladan.item.enums.StorageLocation;
 import com.fredrik.matladan.item.mapper.ItemMapper;
 import com.fredrik.matladan.item.repository.ItemRepository;
-import com.fredrik.matladan.user.dto.CustomUserResponseDTO;
 import com.fredrik.matladan.user.model.CustomUser;
 import com.fredrik.matladan.user.repository.CustomUserRepository;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
+@AllArgsConstructor
 @Service
+@Transactional
 public class ItemServiceImpl implements ItemService{
     private final CustomUserRepository customUserRepository;
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
-
-    public ItemServiceImpl(CustomUserRepository customUserRepository, ItemRepository itemRepository, ItemMapper itemMapper) {
-        this.customUserRepository = customUserRepository;
-        this.itemRepository = itemRepository;
-        this.itemMapper = itemMapper;
-    }
 
 
     @Override
@@ -39,7 +37,7 @@ public class ItemServiceImpl implements ItemService{
         Item item = itemMapper.toEntity(createItemDTO, currentUser);
 
         //? Add the helping method to make sure that the fridge items has an expiry date
-        validateFridgeHasExpirydate(item);
+        validateFridgeHasExpiryDate(item);
 
         //? Save the item to the database
         Item savedItem = itemRepository.save(item);
@@ -48,27 +46,101 @@ public class ItemServiceImpl implements ItemService{
         return itemMapper.toResponseDTO(savedItem);
     }
 
+    //? Get all items from the current user who is logged in
     @Override
-    public UpdateItemDTO updateItem(Long id, UpdateItemDTO updateItemDTO) {
-        return null;
-    }
+    public List<ItemResponseDTO> getAllItemsFromCurrentUser() {
+        //? Get the current user from SecurityContext
+        CustomUser currentUser = getCurrentUser();
 
-
-    @Override
-    public void deleteItem(Long id) {
-
-    }
-
-    @Override
-    public List<ItemResponseDTO> getAllItems() {
-        return itemRepository.findAll()
+        return itemRepository.findAllByStorageOwner_Id(currentUser.getId())
                 .stream()
                 .map(itemMapper::toResponseDTO)
                 .toList();
     }
 
+    //? Same as above but with pagination
+    @Override
+    public Page<ItemResponseDTO> getAllItemsFromCurrentUser(Pageable pageable) {
+        CustomUser currentUser = getCurrentUser();
+
+        return itemRepository.findAllByStorageOwner_Id(currentUser.getId(), pageable)
+                .map(itemMapper::toResponseDTO);
+    }
+
+    @Override
+    public List<ItemResponseDTO> getItemsByLocation(StorageLocation location) {
+        CustomUser currentUser = getCurrentUser();
+
+        return itemRepository.findAllByStorageOwner_IdAndStorageLocation(currentUser.getId(), location)
+                .stream()
+                .map(itemMapper::toResponseDTO)
+                .toList();
+    }
+
+    @Override
+    public Page<ItemResponseDTO> getItemsByLocation(StorageLocation location, Pageable pageable) {
+        CustomUser currentUser = getCurrentUser();
+
+        return itemRepository.findAllByStorageOwner_IdAndStorageLocation(currentUser.getId(), location, pageable)
+                .map(itemMapper::toResponseDTO);
+    }
+
+    @Override
+    public List<ItemResponseDTO> searchItemsByName(String itemName) {
+        CustomUser currentUser = getCurrentUser();
+
+        return itemRepository.findAllByStorageOwner_IdAndNameContainingIgnoreCase(currentUser.getId(), itemName)
+                .stream()
+                .map(itemMapper::toResponseDTO)
+                .toList();
+    }
+
+    @Override
+    public Page<ItemResponseDTO> searchItemsByName(String itemName, Pageable pageable) {
+        CustomUser currentUser = getCurrentUser();
+
+        return itemRepository.findAllByStorageOwner_IdAndNameContainingIgnoreCase(currentUser.getId(), itemName, pageable)
+                .map(itemMapper::toResponseDTO);
+    }
+
+    @Override
+    public UpdateItemDTO updateItemFromCurrentUser(Long id, UpdateItemDTO updateItemDTO) {
+        CustomUser currentUser = getCurrentUser();
+
+        Item item = itemRepository.findByIdAndStorageOwner_Id(id, currentUser.getId()).
+                orElseThrow(()
+                        -> new RuntimeException("Can't find the item in with your id that you tried to update"));
+
+        itemMapper.patch(updateItemDTO, item);
+
+        //? Check if it's a fridge item and if it needs an expiry date
+        validateFridgeHasExpiryDate(item);
+
+        Item updatedItem = itemRepository.save(item);
+
+        return itemMapper.toUpdateDTO(updatedItem);
+    }
+
+    //? Delete item from the database with the id from the item
+    @Override
+    public void deleteItem(Long id) {
+        CustomUser currentUser = getCurrentUser();
+
+        Item item = itemRepository.findByIdAndStorageOwner_Id(id, currentUser.getId()).
+                orElseThrow(()
+                        -> new RuntimeException("Can't find the item in with your id that you tried to delete"));
+
+        itemRepository.delete(item);
+    }
+
+
+    //
+    //                         ----- Helper methods  ----
+    //
+    //
+
     //? Helping method to make sure that the fridge items has an expiry date
-    private void validateFridgeHasExpirydate(Item item){
+    private void validateFridgeHasExpiryDate(Item item){
         if (item.getStorageLocation() == StorageLocation.FRIDGE
                 && item.getExpiryDate() == null) {
             throw new IllegalArgumentException("Fridge must have an expiry date");

@@ -19,7 +19,7 @@ public class itemController {
     }
     @GetMapping
     public ResponseEntity<List<ItemResponseDTO>> getAllItems(){
-        List<ItemResponseDTO> items = itemService.getAllItems();
+        List<ItemResponseDTO> items = itemService.getAllItemsFromCurrentUser();
         return ResponseEntity.ok(items);
     }
 

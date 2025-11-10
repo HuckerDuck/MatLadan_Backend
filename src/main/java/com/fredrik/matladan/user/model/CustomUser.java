@@ -20,7 +20,6 @@ public class CustomUser {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Setter (AccessLevel.NONE)
-    @Getter (AccessLevel.NONE)
     @Column (updatable = false, nullable = false)
     private UUID id;
 

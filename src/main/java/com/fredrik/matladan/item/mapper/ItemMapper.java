@@ -26,6 +26,7 @@ public interface ItemMapper {
 
     //? Entity to ResponseDTO
     ItemResponseDTO toResponseDTO(Item item);
+    UpdateItemDTO toUpdateDTO(Item item);
 
     //? For the Patch method later
     //? NullValuePropertyMappingStrategy.IGNORE is used to say
