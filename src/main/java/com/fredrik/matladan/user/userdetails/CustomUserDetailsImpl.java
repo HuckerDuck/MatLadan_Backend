@@ -25,10 +25,6 @@ public class CustomUserDetailsImpl implements UserDetails {
 
         //? Will later be used in our SecurityConfig to check the diffrent
         //? path and who has the right to be there or not
-
-        //? Can also be used in the controller  with
-        //? @PreAuthorize("hasRole('ROLE_USER')")
-        //? Then we can check if the user has the right to do something
         return List.of(
                 new SimpleGrantedAuthority("ROLE_" + user.getRole())
         );

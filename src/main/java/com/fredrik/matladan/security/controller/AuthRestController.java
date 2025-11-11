@@ -1,11 +1,10 @@
-package com.fredrik.matladan.securityconfig.auth;
-import com.fredrik.matladan.securityconfig.jwt.JwtUtils;
+package com.fredrik.matladan.security.controller;
+import com.fredrik.matladan.security.jwt.JwtUtils;
 import com.fredrik.matladan.user.userdetails.CustomUserDetailsImpl;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,26 +41,15 @@ public class AuthRestController {
                 new UsernamePasswordAuthenticationToken(username, password)
         );
 
-        System.out.println("\n========= AUTHENTICATION RESULT =========");
-        System.out.println("Class: " + authentication.getClass().getSimpleName());
-        System.out.println("Authenticated: " + authentication.isAuthenticated());
-
         Object principal = authentication.getPrincipal();
         System.out.println("Principal type: " + principal.getClass().getSimpleName());
         if (principal instanceof CustomUserDetailsImpl userDetails) {
-            System.out.println("  Username: " + userDetails.getUsername());
-            System.out.println("  Authorities: " + userDetails.getAuthorities());
-            System.out.println("  Account Non Locked: " + userDetails.isAccountNonLocked());
-            System.out.println("  Account Enabled: " + userDetails.isEnabled());
-            System.out.println("  Password (hashed): " + userDetails.getPassword());
-        } else {
-            System.out.println("Principal value: " + principal);
+            logger.debug("User Details: {}, Authorities {}, Enabled: {}",
+                    userDetails.getUsername()
+                    , userDetails.getAuthorities()
+                    , userDetails.isEnabled());
         }
 
-        System.out.println("Credentials: " + authentication.getCredentials());
-        System.out.println("Details: " + authentication.getDetails());
-        System.out.println("Authorities: " + authentication.getAuthorities());
-        System.out.println("=========================================\n");
 
 
         CustomUserDetailsImpl customUserDetails = (CustomUserDetailsImpl) authentication.getPrincipal();

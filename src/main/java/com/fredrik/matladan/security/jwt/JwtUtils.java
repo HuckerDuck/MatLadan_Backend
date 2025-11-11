@@ -1,4 +1,4 @@
-package com.fredrik.matladan.securityconfig.jwt;
+package com.fredrik.matladan.security.jwt;
 
 import com.fredrik.matladan.user.enums.CustomUserRole;
 import com.fredrik.matladan.user.model.CustomUser;

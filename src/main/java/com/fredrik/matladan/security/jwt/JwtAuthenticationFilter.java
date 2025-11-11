@@ -1,4 +1,4 @@
-package com.fredrik.matladan.securityconfig.jwt;
+package com.fredrik.matladan.security.jwt;
 import com.fredrik.matladan.user.userdetails.CustomUserDetailsService;
 import io.micrometer.common.lang. NonNull;
 import jakarta.servlet.FilterChain ;
