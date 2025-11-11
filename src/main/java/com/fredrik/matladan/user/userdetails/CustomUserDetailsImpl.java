@@ -16,12 +16,6 @@ public class CustomUserDetailsImpl implements UserDetails {
         this.user = user;
     }
 
-    /**
-     * Might later wanna add a List of Userrole Authorities
-     * Like a User jave Role + Permissions [ROLE_USER, READ_USER, WRITE_USER]
-     * List<SimpleGrantedAuthority> authorities;
-     */
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         //? Spring Security handles authories in a diffrent way

@@ -1,6 +1,6 @@
 package com.fredrik.matladan.user.model;
 
-import com.fredrik.matladan.user.enums.CustomUserRoleEnums;
+import com.fredrik.matladan.user.enums.CustomUserRole;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -47,7 +47,7 @@ public class CustomUser {
     @Column (nullable = false)
 
     //! Make a List of diffrent roles?
-    private CustomUserRoleEnums role;
+    private CustomUserRole role;
 
     //? When the User was created
     @Setter (AccessLevel.NONE)
@@ -71,7 +71,7 @@ public class CustomUser {
         }
 
         if (role == null){
-            this.role = CustomUserRoleEnums.USER;
+            this.role = CustomUserRole.USER;
         }
     }
 

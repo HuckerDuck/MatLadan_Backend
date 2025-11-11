@@ -36,7 +36,7 @@ public class ItemServiceImpl implements ItemService{
         //? Then map from DTO to Entity
         Item item = itemMapper.toEntity(createItemDTO, currentUser);
 
-        //? Add the helping method to make sure that the fridge items has an expiry date
+        //? Add the helping method to make sure that the fridge items have an expiry date
         validateFridgeHasExpiryDate(item);
 
         //? Save the item to the database
@@ -121,7 +121,7 @@ public class ItemServiceImpl implements ItemService{
         return itemMapper.toResponseDTO(updatedItem);
     }
 
-    //? Delete item from the database with the id from the item
+    //? Delete an item from the database with the id from the item
     @Override
     public void deleteItem(Long id) {
         CustomUser currentUser = getCurrentUser();
@@ -139,7 +139,7 @@ public class ItemServiceImpl implements ItemService{
     //
     //
 
-    //? Helping method to make sure that the fridge items has an expiry date
+    //? Helping method to make sure that the fridge items have an expiry date
     private void validateFridgeHasExpiryDate(Item item){
         if (item.getStorageLocation() == StorageLocation.FRIDGE
                 && item.getExpiryDate() == null) {
