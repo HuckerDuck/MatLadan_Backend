@@ -2,7 +2,9 @@ package com.fredrik.matladan.user.service;
 
 import com.fredrik.matladan.user.dto.CreateUserDTO;
 import com.fredrik.matladan.user.dto.CustomUserResponseDTO;
+import com.fredrik.matladan.user.exceptions.EmailAlreadyExistsException;
 import com.fredrik.matladan.user.exceptions.UserAlreadyExistsException;
+import com.fredrik.matladan.user.exceptions.UserNotFoundException;
 import com.fredrik.matladan.user.mapper.CustomUserMapper;
 import com.fredrik.matladan.user.model.CustomUser;
 import com.fredrik.matladan.user.repository.CustomUserRepository;
@@ -50,7 +52,7 @@ public class CustomUserServiceImpl implements CustomUserService{
 
         //? Make a check if the email already exist
         if(repository.findByEmail(toLowerCaseEmail).isPresent()){
-            throw new RuntimeException("Email already exists in the database");
+            throw new EmailAlreadyExistsException(toLowerCaseEmail);
         }
 
         //? Mapper DTO -> Entity
@@ -81,7 +83,7 @@ public class CustomUserServiceImpl implements CustomUserService{
 
         //? Check if the user exists or not
         if (user.isEmpty()){
-            throw new RuntimeException("User does not exist");
+            throw new UserNotFoundException(username);
         }
 
         return mapper.toResponseDTO(user.get());
@@ -102,12 +104,12 @@ public class CustomUserServiceImpl implements CustomUserService{
 
         //? Check if the user exists or not
         if (user.isEmpty()){
-            throw new RuntimeException("User does not exist");
+            throw new UserNotFoundException(username);
         }
 
         //? Make a check if the email already exist
         if(repository.findByEmail(toLowerCaseEmail).isPresent()){
-            throw new RuntimeException("Email already exists in the database");
+            throw new EmailAlreadyExistsException(toLowerCaseEmail);
         }
 
         CustomUser updatedUser = user.get();
@@ -131,7 +133,7 @@ public class CustomUserServiceImpl implements CustomUserService{
 
         //? Check if the user exists or not
         if (customUser.isEmpty()){
-            throw new RuntimeException("User does not exist");
+            throw new UserNotFoundException(username);
         }
 
         CustomUser user = customUser.get();

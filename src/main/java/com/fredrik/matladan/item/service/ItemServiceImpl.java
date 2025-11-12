@@ -5,8 +5,11 @@ import com.fredrik.matladan.item.dto.ItemResponseDTO;
 import com.fredrik.matladan.item.dto.UpdateItemDTO;
 import com.fredrik.matladan.item.entity.Item;
 import com.fredrik.matladan.item.enums.StorageLocation;
+import com.fredrik.matladan.item.exceptions.ItemNotFoundException;
+import com.fredrik.matladan.item.exceptions.UserIsNotLoggedInException;
 import com.fredrik.matladan.item.mapper.ItemMapper;
 import com.fredrik.matladan.item.repository.ItemRepository;
+import com.fredrik.matladan.user.exceptions.UserNotFoundException;
 import com.fredrik.matladan.user.model.CustomUser;
 import com.fredrik.matladan.user.repository.CustomUserRepository;
 import jakarta.transaction.Transactional;
@@ -29,7 +32,7 @@ public class ItemServiceImpl implements ItemService{
 
     @Override
     public ItemResponseDTO createItem(CreateItemDTO createItemDTO) {
-        //? Get user från SecurityContext
+        //? Get user from SecurityContext
         //? This will throw an exception if the user is not logged in
         CustomUser currentUser = getCurrentUser();
 
@@ -107,9 +110,9 @@ public class ItemServiceImpl implements ItemService{
     public ItemResponseDTO updateItemFromCurrentUser(Long id, UpdateItemDTO updateItemDTO) {
         CustomUser currentUser = getCurrentUser();
 
-        Item item = itemRepository.findByIdAndStorageOwner_Id(id, currentUser.getId()).
-                orElseThrow(()
-                        -> new RuntimeException("Can't find the item in with your id that you tried to update"));
+        Item item = itemRepository.findByIdAndStorageOwner_Id(id, currentUser.getId())
+                        .orElseThrow(()-> new ItemNotFoundException(id));
+
 
         itemMapper.patch(updateItemDTO, item);
 
@@ -128,7 +131,7 @@ public class ItemServiceImpl implements ItemService{
 
         Item item = itemRepository.findByIdAndStorageOwner_Id(id, currentUser.getId()).
                 orElseThrow(()
-                        -> new RuntimeException("Can't find the item in with your id that you tried to delete"));
+                        -> new ItemNotFoundException(id));
 
         itemRepository.delete(item);
     }
@@ -158,7 +161,7 @@ public class ItemServiceImpl implements ItemService{
 
         String username = auth.getName();
 
-        return customUserRepository.findByUsername(username).
-                orElseThrow(() -> new RuntimeException("Can't find user in the database with username " + username));
+        return customUserRepository.findByUsername(username)
+                .orElseThrow(() -> new UserIsNotLoggedInException());
     }
 }
