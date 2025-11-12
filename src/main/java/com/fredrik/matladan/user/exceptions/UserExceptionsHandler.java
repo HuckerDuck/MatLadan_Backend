@@ -52,22 +52,6 @@ public class UserExceptionsHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiErrorResponse);
     }
 
-    @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<ApiErrorResponse> handleUserAlreadyExist(
-            UserAlreadyExistsException exception,
-            HttpServletRequest request
-    ){
-        logger.warn ("User was already in use error: {}", exception.getMessage());
-
-        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
-                LocalDateTime.now(),
-                request.getRequestURI(),
-                HttpStatus.CONFLICT.value(),
-                List.of()
-        );
-
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiErrorResponse);
-    }
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<ApiErrorResponse> handleEmailAlreadyExist(
