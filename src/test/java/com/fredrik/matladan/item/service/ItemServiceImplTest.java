@@ -17,11 +17,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.sql.SQLOutput;
 import java.time.LocalDate;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,6 +36,8 @@ class ItemServiceImplTest {
     //? For security reason we will use mock here
     //? We got a real database setup but it's
     //? Better if we pretend like we have a real database
+
+    private static final Logger logger = LoggerFactory.getLogger(ItemServiceImplTest.class);
 
     @Mock
     private ItemRepository itemRepository;
@@ -78,6 +87,25 @@ class ItemServiceImplTest {
                 testingitem.getExpiryDate()
         );
 
+        itemResponseDTO = new ItemResponseDTO(
+                1L,
+                testingitem.getName(),
+                testingitem.getStorageLocation(),
+                testingitem.getExpiryDate(),
+                LocalDate.now(),  // addedDate
+                testingitem.getQuantity(),
+                testingitem.getSizeOfUnit(),
+                testingitem.getUnitAmount()
+        );
+
+
+        when(authentication.getName()).thenReturn(testingUser.getUsername());
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+
+        when(customUserRepository.findByUsername("TestUser"))
+                .thenReturn(Optional.of(testingUser));
+
     }
 
     @Test
@@ -86,19 +114,36 @@ class ItemServiceImplTest {
         //? AAA principal
         //? Arange, ACT, Assert
 
+        logger.info("==== Starting Test ====");
+        logger.info("Running test: createItemTest");
+        logger.info("Creating an item with name: {}", createItemDTO.name());
+
         // Arrange
         when(itemMapper.toEntity(createItemDTO, testingUser)).thenReturn(testingitem);
         when(itemRepository.save(testingitem)).thenReturn(testingitem);
         when(itemMapper.toResponseDTO(testingitem)).thenReturn(itemResponseDTO);
 
+        logger.debug("Items has gone through the dto chain and the mapper");
+
         // Act
         ItemResponseDTO resultFromDTO = itemService.createItem(createItemDTO);
 
+
         // Assert
-        assert(resultFromDTO.equals(itemResponseDTO));
+        assertNotNull(resultFromDTO);
+
+        assertEquals(itemResponseDTO.name(), resultFromDTO.name());
+
+        logger.info("Test passed");
+        logger.debug("Item was created");
+        logger.debug("The response from the mock service matched the responseDTO");
+        logger.info("==== Test Ended ====");
+
     }
 
     @AfterEach
     void tearDown() {
+        logger.info("Cleaning up after the test");
+        SecurityContextHolder.clearContext();
     }
 }

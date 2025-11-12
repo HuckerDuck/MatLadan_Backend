@@ -2,7 +2,9 @@ package com.fredrik.matladan.user.advice;
 
 import com.fredrik.matladan.user.advice.DTO.ApiErrorResponse;
 import com.fredrik.matladan.user.advice.DTO.ValidationError;
+import com.fredrik.matladan.user.exceptions.EmailAlreadyExistsException;
 import com.fredrik.matladan.user.exceptions.UserAlreadyExistsException;
+import com.fredrik.matladan.user.exceptions.UserNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,24 +50,5 @@ public class ValidationAdvice {
                         errorDetailList
                 )
         );
-    }
-
-    @ExceptionHandler (UserAlreadyExistsException.class)
-    public ResponseEntity<ApiErrorResponse> handleUserAlreadyExists(
-            UserAlreadyExistsException exception,
-            HttpServletRequest request) {
-
-        logger.warn("User Already exists error: {}",exception.getMessage());
-
-        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
-                LocalDateTime.now(),
-                request.getRequestURI(),
-                HttpStatus.CONFLICT.value(),
-                List.of()
-        );
-
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiErrorResponse);
-
-
     }
 }
