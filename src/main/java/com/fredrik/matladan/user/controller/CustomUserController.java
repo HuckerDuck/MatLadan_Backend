@@ -22,8 +22,7 @@ public class CustomUserController {
     //
     // Get all users
     //
-    //@PreAuthorize("hasRole('ADMIN')")
-    @GetMapping
+    @GetMapping("/getallusers")
     public ResponseEntity<List<CustomUserResponseDTO>> getAllUsers(){
         List<CustomUserResponseDTO> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
@@ -43,7 +42,6 @@ public class CustomUserController {
     //
     // Get a User by username
     //
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{username}")
     public ResponseEntity<CustomUserResponseDTO> getUserByUsername(
             @PathVariable String username

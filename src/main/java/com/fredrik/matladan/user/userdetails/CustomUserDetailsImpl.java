@@ -16,12 +16,6 @@ public class CustomUserDetailsImpl implements UserDetails {
         this.user = user;
     }
 
-    /**
-     * Might later wanna add a List of Userrole Authorities
-     * Like a User jave Role + Permissions [ROLE_USER, READ_USER, WRITE_USER]
-     * List<SimpleGrantedAuthority> authorities;
-     */
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         //? Spring Security handles authories in a diffrent way
@@ -31,10 +25,6 @@ public class CustomUserDetailsImpl implements UserDetails {
 
         //? Will later be used in our SecurityConfig to check the diffrent
         //? path and who has the right to be there or not
-
-        //? Can also be used in the controller  with
-        //? @PreAuthorize("hasRole('ROLE_USER')")
-        //? Then we can check if the user has the right to do something
         return List.of(
                 new SimpleGrantedAuthority("ROLE_" + user.getRole())
         );
