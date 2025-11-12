@@ -28,7 +28,16 @@ import static org.junit.jupiter.api.Assertions.*;
         "spring.datasource.username=sa",
         "spring.datasource.password=",
         "spring.jpa.hibernate.ddl-auto=create-drop",
-        "spring.flyway.enabled=false"
+        "spring.flyway.enabled=false",
+
+        //? After adding JWT the test fails since it can't find the secret key
+        //! Therefore we set them here, note that for security this is not the same as
+        //? We use for development or production
+
+        "jwt.secret=dGVzdFNlY3JldEtleUZvckpXVFRlc3RpbmdQdXJwb3Nlc09ubHkxMjM0NTY3ODkw",
+        "jwt.expiration=3600000"
+
+        //? After adding this the testt finished successfully
 })
 public class CustomUserServiceH2DatabaseTest {
     @Autowired
@@ -118,7 +127,7 @@ public class CustomUserServiceH2DatabaseTest {
             customUserService.createUser(createUserDuplicate);
         });
 
-        assertEquals("Username already exists in the database", exception.getMessage());
+        assertEquals("User with username BennyTest already exists in the database", exception.getMessage());
 
     }
 }

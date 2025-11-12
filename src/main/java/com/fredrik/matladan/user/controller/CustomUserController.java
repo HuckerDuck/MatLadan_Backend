@@ -22,7 +22,6 @@ public class CustomUserController {
     //
     // Get all users
     //
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<List<CustomUserResponseDTO>> getAllUsers(){
         List<CustomUserResponseDTO> users = userService.getAllUsers();

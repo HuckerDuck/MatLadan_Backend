@@ -103,9 +103,9 @@ public class JwtUtils {
 
         //? Convert each string like "ROLE_User" -> UserRole.USER
         Set<CustomUserRole > roles = authoritiesClaim. stream()
-                .filter(String.class::isInstance ) // keep only strings
+                .filter(String.class::isInstance )
                 .map(String.class::cast)
-                .map(role -> role.replace("ROLE_", "")) // remove prefix if necessary
+                .map(role -> role.replace("ROLE_", ""))
                 .map(String::toUpperCase )
                 .map(CustomUserRole ::valueOf) // map to my enum
                 .collect(Collectors.toSet());
