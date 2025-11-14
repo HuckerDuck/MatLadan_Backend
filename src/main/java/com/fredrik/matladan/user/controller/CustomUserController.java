@@ -4,20 +4,18 @@ import com.fredrik.matladan.user.dto.CreateUserDTO;
 import com.fredrik.matladan.user.dto.CustomUserResponseDTO;
 import com.fredrik.matladan.user.service.CustomUserService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/api/users")
 public class CustomUserController {
     private final CustomUserService userService;
-
-    public CustomUserController(CustomUserService userService) {
-        this.userService = userService;
-    }
 
     //
     // Get all users
@@ -31,13 +29,7 @@ public class CustomUserController {
     //
     // Add a new user
     //
-    @PostMapping(("/register"))
-    public ResponseEntity<CustomUserResponseDTO> addAUser(
-            @Valid @RequestBody CreateUserDTO createUserDTO
-    ){
-        CustomUserResponseDTO responseDTO = userService.createUser(createUserDTO);
-        return ResponseEntity.status(201).body(responseDTO);
-    }
+
 
     //
     // Get a User by username
