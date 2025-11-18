@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/items")
+@RequestMapping("/api/items")
 @RequiredArgsConstructor
 //? Requrired that you are atleast logged in
 @PreAuthorize("isAuthenticated()")
@@ -28,7 +28,7 @@ public class ItemController {
     //? --- Get mappings ---
     //?
 
-    @PrePersist()
+
     // Get all items
     @GetMapping
     public ResponseEntity<List<ItemResponseDTO>> getAllItems(){

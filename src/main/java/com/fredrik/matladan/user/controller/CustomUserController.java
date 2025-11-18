@@ -27,11 +27,6 @@ public class CustomUserController {
     }
 
     //
-    // Add a new user
-    //
-
-
-    //
     // Get a User by username
     //
     @GetMapping("/{username}")
@@ -41,4 +36,6 @@ public class CustomUserController {
         CustomUserResponseDTO user = userService.findByUsername(username);
         return ResponseEntity.ok(user);
     }
+
+    //! Missing a disable user endpoint
 }

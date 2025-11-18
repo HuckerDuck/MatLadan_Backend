@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Extract token
         String token = extractJwtFromCookie (request);
         if (token == null) {
-            token = extractJwtFromRequest (request); // fallback to Authorization header
+            token = extractJwtFromRequest (request);
         }
         if (token == null) {
             logger.debug("No JWT token found in request" );

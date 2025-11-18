@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 public class CustomUserMapper {
     //? Till entit
 
+    //TODO Add a MapStruct annotation to this method
+
     //! Small change here,
     //! Was returning the password which I don't wanna do
     //! So I changed that
