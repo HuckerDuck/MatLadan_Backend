@@ -24,7 +24,7 @@ public record CreateItemDTO (
         double sizeOfUnit,
 
         @NotNull (message = "You need to specify how much there if of this")
-        UnitAmountType unitAmountType,
+        UnitAmountType unitAmount,
 
         LocalDate expiryDate
 ) {
