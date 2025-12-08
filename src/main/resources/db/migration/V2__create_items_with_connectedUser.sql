@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS items (
                                      user_id          UUID            NOT NULL,
                                      quantity         INTEGER         NOT NULL CHECK (quantity > 0),
                                      size_of_unit     DOUBLE PRECISION NOT NULL CHECK (size_of_unit > 0),
-                                     unit_amount      VARCHAR(32)     NOT NULL
+                                     unit_amount_type      VARCHAR(32)     NOT NULL
 );
 
 -- Kopplar items.user_id -> users.id (UUID)
@@ -27,3 +27,6 @@ CREATE INDEX IF NOT EXISTS idx_items_user_id ON items (user_id);
 ALTER TABLE items
     ADD CONSTRAINT chk_items_fridge_requires_expiry
         CHECK (storage_location <> 'FRIDGE' OR expiry_date IS NOT NULL);
+
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto;

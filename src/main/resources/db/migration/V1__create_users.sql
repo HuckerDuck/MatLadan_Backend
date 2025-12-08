@@ -5,7 +5,7 @@
 -- ===========================================
 
 CREATE TABLE IF NOT EXISTS users (
-                       id            BIGSERIAL PRIMARY KEY,
+                       id            UUID PRIMARY KEY,
                        username      VARCHAR(80)  NOT NULL UNIQUE,
                        email         VARCHAR(160) NOT NULL UNIQUE,
                        password_hash VARCHAR(255) NOT NULL,
