@@ -23,8 +23,8 @@ public record CreateItemDTO (
         @Positive (message = "The quantity needs to be of a positive number")
         double sizeOfUnit,
 
-        @NotNull (message = "You need to specify how much there if of this")
-        UnitAmountType unitAmount,
+        @NotNull (message = "You need to specify the type of the amount" + "Like gram, kilo etc")
+        UnitAmountType unitAmountType,
 
         LocalDate expiryDate
 ) {

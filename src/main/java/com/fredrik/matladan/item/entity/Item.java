@@ -47,13 +47,13 @@ public class Item {
     private Integer quantity;
 
     //? How big is the unit of this item
-    @Column(nullable = false)
+    @Column(name = "size_of_unit", nullable = false)
     private double sizeOfUnit;
 
     //? This is the description of the item
     @Enumerated(EnumType.STRING)
-    @Column(name = "unit_amount")
-    private UnitAmountType unitAmount;
+    @Column(name = "unit_amount_type")
+    private UnitAmountType unitAmountType;
 
     @PrePersist
     void onCreatingAnItem(){
