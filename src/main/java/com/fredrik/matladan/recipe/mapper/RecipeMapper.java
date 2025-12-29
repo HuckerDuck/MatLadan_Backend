@@ -1,8 +1,16 @@
 package com.fredrik.matladan.recipe.mapper;
 
 import com.fredrik.matladan.recipe.dto.CreateRecipeDTO;
+import com.fredrik.matladan.recipe.dto.RecipeIngredientDTO;
 import com.fredrik.matladan.recipe.model.RecipeEntity;
-import org.mapstruct.*;
+import com.fredrik.matladan.recipe.model.RecipeIngredient;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface RecipeMapper {
@@ -26,4 +34,16 @@ public interface RecipeMapper {
     @Mapping(target = "createdDate", ignore = true)
     @Mapping(target = "lastModifiedDate", ignore = true)
     void patch(CreateRecipeDTO createRecipeDTO, @MappingTarget RecipeEntity recipeEntity);
+
+    //? Ingredient mapping helpers
+    //? MapStruct will use these automatically when mapping nested lists
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "recipe", ignore = true)
+    RecipeIngredient toIngredientEntity(RecipeIngredientDTO ingredientDTO);
+
+    RecipeIngredientDTO toIngredientDTO(RecipeIngredient ingredient);
+
+    //? List mapping for ingredients
+    List<RecipeIngredient> toIngredientEntityList(List<RecipeIngredientDTO> dtos);
+    List<RecipeIngredientDTO> toIngredientDTOList(List<RecipeIngredient> entities);
 }
