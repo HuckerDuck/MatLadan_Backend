@@ -35,7 +35,7 @@ public class RecipeEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String instructions;
 
-    @Column(nullable = false)
+    @Column(name = "image_url", nullable = false, length = 500)
     private String imageURL;
 
     @Column(nullable = false)

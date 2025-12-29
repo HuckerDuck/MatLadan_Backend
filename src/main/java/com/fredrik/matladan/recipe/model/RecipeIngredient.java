@@ -28,7 +28,7 @@ public class RecipeIngredient {
     private double amount;
 
 
+    @Column(name = "unit_amount_type")
     @Enumerated(EnumType.STRING)
-    @Column(name = "unit", nullable = false)
     private UnitAmountType unitAmountType;
 }
