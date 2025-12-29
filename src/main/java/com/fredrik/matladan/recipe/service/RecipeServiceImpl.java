@@ -1,6 +1,7 @@
 package com.fredrik.matladan.recipe.service;
 
 import com.fredrik.matladan.recipe.dto.CreateRecipeDTO;
+import com.fredrik.matladan.recipe.exceptions.RecipeNotFoundException;
 import com.fredrik.matladan.recipe.mapper.RecipeMapper;
 import com.fredrik.matladan.recipe.model.RecipeEntity;
 import com.fredrik.matladan.recipe.repository.RecipeRepository;
@@ -27,7 +28,7 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public CreateRecipeDTO getRecipeById(Long id) {
         RecipeEntity recipe = recipeRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Receptet med ID " + id + " hittades inte"));
+                .orElseThrow(() -> new RecipeNotFoundException(id));
         return recipeMapper.toDTO(recipe);
     }
 }
