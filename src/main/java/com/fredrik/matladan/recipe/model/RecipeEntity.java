@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -16,7 +18,7 @@ import java.time.LocalDateTime;
 public class RecipeEntity {
     @Setter (AccessLevel.NONE)
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false)
     private Long id;
 
@@ -26,7 +28,11 @@ public class RecipeEntity {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
+
+    //? Normaly String has a limit of 255 but I wanna be able to add more
+    //? So we use TEXT instead
+    //? Then we can add more than 255 characters to the instructions
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String instructions;
 
     @Column(nullable = false)
@@ -51,6 +57,11 @@ public class RecipeEntity {
     @Column(name = "created_date", nullable = false)
     private LocalDateTime createdDate;
 
+    //? This List is used to store all the ingredients that belong to this recipe
+    //? This will make it easier to delete the recipe and all the ingredients that belong to it
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RecipeIngredient> ingredients = new ArrayList<>();
+
     @Column(name = "last_modified_date")
     private LocalDateTime lastModifiedDate;
     @PrePersist
@@ -58,6 +69,11 @@ public class RecipeEntity {
         this.createdDate = LocalDateTime.now();
         this.lastModifiedDate = this.createdDate;
 
+    }
+
+    @PreUpdate
+    void onUpdatingUser(){
+        this.lastModifiedDate = LocalDateTime.now();
     }
 
 }
