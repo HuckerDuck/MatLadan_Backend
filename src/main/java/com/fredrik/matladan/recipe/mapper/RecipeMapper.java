@@ -4,11 +4,7 @@ import com.fredrik.matladan.recipe.dto.CreateRecipeDTO;
 import com.fredrik.matladan.recipe.dto.RecipeIngredientDTO;
 import com.fredrik.matladan.recipe.model.RecipeEntity;
 import com.fredrik.matladan.recipe.model.RecipeIngredient;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 
 import java.util.List;
 
@@ -46,4 +42,15 @@ public interface RecipeMapper {
     //? List mapping for ingredients
     List<RecipeIngredient> toIngredientEntityList(List<RecipeIngredientDTO> dtos);
     List<RecipeIngredientDTO> toIngredientDTOList(List<RecipeIngredient> entities);
+
+    //? Link the ingredients to the recipe
+    //? This is needed because the ingredients is not linked to the recipe
+    //? So I had a error when I tried to save the recipe
+    //? This should fix it
+    @AfterMapping
+    default void linkIngredients(@MappingTarget RecipeEntity recipe) {
+        recipe.getIngredients().forEach(ingredient ->
+                ingredient.setRecipe(recipe)
+        );
+    }
 }
