@@ -2,6 +2,7 @@ package com.fredrik.matladan.recipe.controller;
 
 import com.fredrik.matladan.recipe.dto.CreateRecipeDTO;
 import com.fredrik.matladan.recipe.dto.RecipeResponseDTO;
+import com.fredrik.matladan.recipe.dto.PatchRecipeDTO;
 import com.fredrik.matladan.recipe.service.RecipeService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -40,4 +41,17 @@ public class RecipeController {
         List<RecipeResponseDTO> recipes = recipeService.getAllRecipes();
         return ResponseEntity.ok(recipes);
     }
+
+    //? Patch - Update a recipe
+    @PatchMapping("/{id}")
+    public ResponseEntity<RecipeResponseDTO> patchRecipe(
+            @PathVariable Long id,
+            @Valid @RequestBody PatchRecipeDTO patchRecipeDTO
+    ) {
+        logger.info("Patching recipe with id: {}", id);
+        RecipeResponseDTO patchedRecipe = recipeService.patchRecipe(id, patchRecipeDTO);
+        return ResponseEntity.ok(patchedRecipe);
+    }
+
+
 }

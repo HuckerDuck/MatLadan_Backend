@@ -2,6 +2,7 @@ package com.fredrik.matladan.recipe.service;
 
 import com.fredrik.matladan.recipe.dto.CreateRecipeDTO;
 import com.fredrik.matladan.recipe.dto.RecipeResponseDTO;
+import com.fredrik.matladan.recipe.dto.PatchRecipeDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -18,10 +19,11 @@ public interface RecipeService {
     List<RecipeResponseDTO> getAllRecipes();
     Page<RecipeResponseDTO> getAllRecipesPaginated(Pageable pageable);
 
-    //? Update a Recipe
-    //?
+    //? Patch a recipe
+    RecipeResponseDTO patchRecipe(Long id, PatchRecipeDTO patchRecipeDTO);
+
     //? Delete a Recipe
-    //?
+
     //? Get a Recipe by ID
     RecipeResponseDTO getRecipeById(Long id);
 

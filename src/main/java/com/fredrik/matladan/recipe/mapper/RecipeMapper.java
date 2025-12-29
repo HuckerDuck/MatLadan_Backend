@@ -3,6 +3,7 @@ package com.fredrik.matladan.recipe.mapper;
 import com.fredrik.matladan.recipe.dto.CreateRecipeDTO;
 import com.fredrik.matladan.recipe.dto.RecipeIngredientDTO;
 import com.fredrik.matladan.recipe.dto.RecipeResponseDTO;
+import com.fredrik.matladan.recipe.dto.PatchRecipeDTO;
 import com.fredrik.matladan.recipe.model.RecipeEntity;
 import com.fredrik.matladan.recipe.model.RecipeIngredient;
 import org.mapstruct.*;
@@ -47,6 +48,16 @@ public interface RecipeMapper {
     //? List mapping for ingredients
     List<RecipeIngredient> toIngredientEntityList(List<RecipeIngredientDTO> dtos);
     List<RecipeIngredientDTO> toIngredientDTOList(List<RecipeIngredient> entities);
+
+    //? This BeanMapping is used for the patch method
+    //? This will ignore the ingredients field since it's not part of the DTO
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdDate", ignore = true)
+    @Mapping(target = "lastModifiedDate", ignore = true)
+    // We ignore ingredients because it's not part of the DTO'
+    @Mapping(target = "ingredients", ignore = true)
+    void patchEntity(@MappingTarget RecipeEntity entity, PatchRecipeDTO patchRecipeDTO);
 
     //? Link the ingredients to the recipe
     //? This is needed because the ingredients is not linked to the recipe
