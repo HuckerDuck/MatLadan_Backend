@@ -2,6 +2,7 @@ package com.fredrik.matladan.recipe.mapper;
 
 import com.fredrik.matladan.recipe.dto.CreateRecipeDTO;
 import com.fredrik.matladan.recipe.dto.RecipeIngredientDTO;
+import com.fredrik.matladan.recipe.dto.RecipeResponseDTO;
 import com.fredrik.matladan.recipe.model.RecipeEntity;
 import com.fredrik.matladan.recipe.model.RecipeIngredient;
 import org.mapstruct.*;
@@ -30,6 +31,10 @@ public interface RecipeMapper {
     @Mapping(target = "createdDate", ignore = true)
     @Mapping(target = "lastModifiedDate", ignore = true)
     void patch(CreateRecipeDTO createRecipeDTO, @MappingTarget RecipeEntity recipeEntity);
+
+    //? These are for the responseDTO
+    RecipeResponseDTO toResponseDTO(RecipeEntity entity);
+    List<RecipeResponseDTO> toResponseDTOList(List<RecipeEntity> entities);
 
     //? Ingredient mapping helpers
     //? MapStruct will use these automatically when mapping nested lists
