@@ -1,6 +1,7 @@
 package com.fredrik.matladan.recipe.controller;
 
 import com.fredrik.matladan.recipe.dto.CreateRecipeDTO;
+import com.fredrik.matladan.recipe.dto.RecipeResponseDTO;
 import com.fredrik.matladan.recipe.service.RecipeService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -25,9 +28,16 @@ public class RecipeController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CreateRecipeDTO> getRecipeById(@PathVariable Long id) {
+    public ResponseEntity<RecipeResponseDTO> getRecipeById(@PathVariable Long id) {
         logger.debug("Getting recipe by id: {}", id);
-        CreateRecipeDTO recipe = recipeService.getRecipeById(id);
+        RecipeResponseDTO recipe = recipeService.getRecipeById(id);
         return ResponseEntity.ok(recipe);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<RecipeResponseDTO>> getAllRecipes(){
+        logger.debug("Getting all recipes");
+        List<RecipeResponseDTO> recipes = recipeService.getAllRecipes();
+        return ResponseEntity.ok(recipes);
     }
 }
