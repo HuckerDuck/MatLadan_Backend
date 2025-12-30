@@ -53,5 +53,13 @@ public class RecipeController {
         return ResponseEntity.ok(patchedRecipe);
     }
 
+    //? Delete - Delete a recipe
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRecipe(@PathVariable Long id) {
+        logger.info("Deleting recipe with id: {}", id);
+        recipeService.deleteRecipe(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }

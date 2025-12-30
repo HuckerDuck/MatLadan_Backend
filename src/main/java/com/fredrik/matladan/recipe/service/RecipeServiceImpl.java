@@ -78,6 +78,18 @@ public class RecipeServiceImpl implements RecipeService {
         return recipeMapper.toResponseDTO(savedRecipe);
     }
 
+    //? Delete - Delete a recipe
+    @Override
+    public void deleteRecipe(Long id) {
+        log.info("Deleting recipe with id: {}", id);
+
+        RecipeEntity recipe = recipeRepository.findById(id)
+                .orElseThrow(() -> new RecipeNotFoundException(id));
+
+        recipeRepository.delete(recipe);
+        log.info("Recipe with id: {} successfully deleted", id);
+    }
+
 
     //? Get - Get a recipe by id
     @Override

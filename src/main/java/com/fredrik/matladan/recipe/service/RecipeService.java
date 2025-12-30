@@ -23,6 +23,7 @@ public interface RecipeService {
     RecipeResponseDTO patchRecipe(Long id, PatchRecipeDTO patchRecipeDTO);
 
     //? Delete a Recipe
+    void deleteRecipe(Long id);
 
     //? Get a Recipe by ID
     RecipeResponseDTO getRecipeById(Long id);
