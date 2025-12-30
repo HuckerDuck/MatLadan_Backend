@@ -1,4 +1,4 @@
-package com.fredrik.matladan.recipechecker;
+package com.fredrik.matladan.recipechecker.dto;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.fredrik.matladan.recipechecker;
+package com.fredrik.matladan.recipechecker.dto;
 
 import com.fredrik.matladan.item.enums.UnitAmountType;
 
