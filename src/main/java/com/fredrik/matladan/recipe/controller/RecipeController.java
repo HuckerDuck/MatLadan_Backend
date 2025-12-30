@@ -8,6 +8,10 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,10 +40,27 @@ public class RecipeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<RecipeResponseDTO>> getAllRecipes(){
-        logger.debug("Getting all recipes");
-        List<RecipeResponseDTO> recipes = recipeService.getAllRecipes();
-        return ResponseEntity.ok(recipes);
+    public ResponseEntity<Page<RecipeResponseDTO>> getAllRecipes(
+            //? Pagination
+            //? Default values are set so that the user have to do anything
+            //? This will just return all recipes
+            //? But with a set page and size
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDirection
+    ) {
+        //? This sort is made so that the recipes are sorted by name ascending by default
+        //? It's a nice way to see all recipes at once
+        Sort sort = sortDirection.equals("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        //? Then we create a pageable object with the sort and page number and size
+        //? This is used to paginate the recipes
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        return ResponseEntity.ok(recipeService.getAllRecipesPaginated(pageable));
     }
 
     //? Patch - Update a recipe
