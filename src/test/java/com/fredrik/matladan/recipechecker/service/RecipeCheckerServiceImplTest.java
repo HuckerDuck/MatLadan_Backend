@@ -3,7 +3,7 @@ package com.fredrik.matladan.recipechecker.service;
 import com.fredrik.matladan.item.repository.ItemRepository;
 import com.fredrik.matladan.recipe.model.RecipeEntity;
 import com.fredrik.matladan.recipe.repository.RecipeRepository;
-import com.fredrik.matladan.recipechecker.dto.recipeIngridientMatchResponseDTO;
+import com.fredrik.matladan.recipechecker.dto.RecipeIngredientMatchResponseDTO;
 import com.fredrik.matladan.user.model.CustomUser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -63,7 +63,7 @@ class RecipeCheckerServiceImplTest {
         when(itemRepository.findByStorageOwner(any())).thenReturn(new ArrayList<>());
 
         // Act
-        recipeIngridientMatchResponseDTO result = recipeCheckerService.canMakeRecipe(1L);
+        RecipeIngredientMatchResponseDTO result = recipeCheckerService.canMakeRecipe(1L);
 
         // Assert
         assertNotNull(result);

@@ -8,7 +8,7 @@ import com.fredrik.matladan.item.enums.UnitAmountType;
 //? otherwise it will be the amount that is missing
 //? boolean isAvailable is used to check if the ingredient is available
 //? this will be true or false
-public record recipeIngridientMatchDTO(
+public record RecipeIngredientMatchDTO(
         String ingredientName,
         double requiredAmount,
         UnitAmountType requiredUnit,
