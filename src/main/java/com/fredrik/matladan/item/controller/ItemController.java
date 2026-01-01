@@ -23,12 +23,6 @@ import java.util.List;
 @PreAuthorize("isAuthenticated()")
 public class ItemController {
     private final ItemService itemService;
-
-    //?
-    //? --- Get mappings ---
-    //?
-
-
     // Get all items
     @GetMapping
     public ResponseEntity<List<ItemResponseDTO>> getAllItems(){
