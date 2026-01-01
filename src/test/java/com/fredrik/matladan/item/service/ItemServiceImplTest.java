@@ -22,8 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -72,7 +70,7 @@ class ItemServiceImplTest {
         testingitem.setStorageLocation(StorageLocation.FRIDGE);
         testingitem.setQuantity(2);
         testingitem.setSizeOfUnit(1.0);
-        testingitem.setUnitAmount(UnitAmountType.LITER);
+        testingitem.setUnitAmountType(UnitAmountType.LITER);
         //? We set the expiry that to be from now and 7 days from now
         //? This is normaly what milk has
         testingitem.setExpiryDate(LocalDate.now().plusDays(7));
@@ -83,7 +81,7 @@ class ItemServiceImplTest {
                 testingitem.getStorageLocation(),
                 testingitem.getQuantity(),
                 testingitem.getSizeOfUnit(),
-                testingitem.getUnitAmount(),
+                testingitem.getUnitAmountType(),
                 testingitem.getExpiryDate()
         );
 
@@ -95,7 +93,7 @@ class ItemServiceImplTest {
                 LocalDate.now(),  // addedDate
                 testingitem.getQuantity(),
                 testingitem.getSizeOfUnit(),
-                testingitem.getUnitAmount()
+                testingitem.getUnitAmountType()
         );
 
 

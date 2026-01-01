@@ -2,6 +2,7 @@ package com.fredrik.matladan.item.repository;
 
 import com.fredrik.matladan.item.entity.Item;
 import com.fredrik.matladan.item.enums.StorageLocation;
+import com.fredrik.matladan.user.model.CustomUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,4 +32,7 @@ public interface ItemRepository extends JpaRepository <Item, Long> {
     List<Item> findAllByStorageOwner_IdAndNameContainingIgnoreCase(UUID ownerId, String name);
     //? With pagination
     Page<Item> findAllByStorageOwner_IdAndNameContainingIgnoreCase(UUID ownerId, String name, Pageable pageable);
+
+    //? This is used finting all the items that belongs to a specific user
+    List<Item> findByStorageOwner(CustomUser storageOwner);
 }
