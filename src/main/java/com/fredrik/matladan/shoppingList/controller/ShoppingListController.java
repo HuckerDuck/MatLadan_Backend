@@ -38,6 +38,20 @@ public class ShoppingListController {
         return ResponseEntity.status(201).body(created);
     }
 
+    //? Post mapping to create a new shopping list based on the recipe
+    @PostMapping("/from-recipe/{recipeId}")
+    public ResponseEntity<List<ShoppingListResponseDTO>> createShoppingListFromRecipe(
+            @PathVariable Long recipeId) {
+        logger.info("Creating shopping list from recipe: {}", recipeId);
+
+        List <ShoppingListResponseDTO> shoppingList =
+                shoppingListService.getShoppingListFromRecipeWithMissingIngrient(recipeId);
+
+        logger.info("Shopping list created: {}", shoppingList.size());
+
+        return ResponseEntity.ok(shoppingList);
+    }
+
     //? Patch mapping for updating shopping list items
     @PatchMapping("/{id}")
     public ResponseEntity<ShoppingListResponseDTO> patchItem(
