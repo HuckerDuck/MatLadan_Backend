@@ -1,6 +1,5 @@
 package com.fredrik.matladan.shoppingList.service;
 
-import com.fredrik.matladan.recipe.dto.RecipeResponseDTO;
 import com.fredrik.matladan.shoppingList.dto.CreateShoppingListDTO;
 import com.fredrik.matladan.shoppingList.dto.PatchShoppingListDTO;
 import com.fredrik.matladan.shoppingList.dto.ShoppingListResponseDTO;
@@ -20,6 +19,9 @@ public interface ShoppingListService {
 
     //? Delete a ShoppingList
     void deleteShoppingListItem(Long id);
+
+    //? Get a ShoppingList based on the recipe
+    List<ShoppingListResponseDTO> getShoppingListFromRecipeWithMissingIngrient(Long recipeId);
 
 
 
