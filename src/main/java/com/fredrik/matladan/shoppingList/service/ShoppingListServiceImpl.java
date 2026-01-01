@@ -12,13 +12,15 @@ import com.fredrik.matladan.shoppingList.mapper.ShoppingListMapper;
 import com.fredrik.matladan.shoppingList.repository.ShoppingListRepository;
 import com.fredrik.matladan.user.model.CustomUser;
 import com.fredrik.matladan.user.repository.CustomUserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
+
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class ShoppingListServiceImpl implements ShoppingListService{
@@ -54,7 +56,9 @@ public class ShoppingListServiceImpl implements ShoppingListService{
 
     @Override
     public ShoppingListResponseDTO patchShoppingListItem(Long id, PatchShoppingListDTO patchShoppingListDTO) {
-        ShoppingListEntity entity = shoppingListRepository.findById(id)
+        CustomUser currentUser = getCurrentUser();
+
+        ShoppingListEntity entity = shoppingListRepository.findByIdAndUserId(id, currentUser.getId())
                 .orElseThrow(() -> new RuntimeException("Shopping list item not found with id: " + id));
 
         shoppingListMapper.patch(patchShoppingListDTO, entity);
@@ -66,10 +70,13 @@ public class ShoppingListServiceImpl implements ShoppingListService{
 
     @Override
     public void deleteShoppingListItem(Long id) {
-        if (!shoppingListRepository.existsById(id)) {
-            throw new RuntimeException("Shopping list item not found with id: " + id);
-        }
-        shoppingListRepository.deleteById(id);
+        CustomUser currentUser = getCurrentUser();
+
+
+        ShoppingListEntity entity = shoppingListRepository.findByIdAndUserId(id, currentUser.getId())
+                .orElseThrow(() -> new RuntimeException("Shopping list item not found with id: " + id));
+
+        shoppingListRepository.delete(entity);
     }
 
     @Override

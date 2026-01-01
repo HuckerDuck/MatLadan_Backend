@@ -7,10 +7,12 @@ import com.fredrik.matladan.shoppingList.service.ShoppingListService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
 @RequestMapping("/api/shopping-list")
 @RestController
