@@ -46,7 +46,11 @@ public class ShoppingListEntity {
     //? This is the id of the recipe that the shopping list item is from
     //? This is used to link the shopping list item to the recipe
     @Column(name = "source_recipe_id")
+
     private Long sourceRecipeId;
+
+    @Column(name = "recipe_name")
+    private String recipeName;
 
     @Column(name = "added_date")
     private LocalDateTime addedDate;

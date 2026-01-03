@@ -1,6 +1,8 @@
 package com.fredrik.matladan.shoppingList.service;
 
 import com.fredrik.matladan.item.exceptions.UserIsNotLoggedInException;
+import com.fredrik.matladan.recipe.model.RecipeEntity;
+import com.fredrik.matladan.recipe.repository.RecipeRepository;
 import com.fredrik.matladan.recipechecker.dto.RecipeIngredientMatchDTO;
 import com.fredrik.matladan.recipechecker.dto.RecipeIngredientMatchResponseDTO;
 import com.fredrik.matladan.recipechecker.service.RecipeCheckerService;
@@ -28,6 +30,7 @@ public class ShoppingListServiceImpl implements ShoppingListService{
     private final ShoppingListMapper shoppingListMapper;
     private final ShoppingListRepository shoppingListRepository;
     private final RecipeCheckerService recipeCheckerService;
+    private final RecipeRepository recipeRepository;
 
     @Override
     public ShoppingListResponseDTO createShoppingList(CreateShoppingListDTO createShoppingListDTO) {
@@ -83,6 +86,9 @@ public class ShoppingListServiceImpl implements ShoppingListService{
     public List<ShoppingListResponseDTO> getShoppingListFromRecipeWithMissingIngrient(Long recipeId) {
         CustomUser currentUser = getCurrentUser();
 
+        RecipeEntity recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(() -> new RuntimeException("Recipe not found with id: " + recipeId));
+
         //? We use the recipechecker to see what is missing like before
         RecipeIngredientMatchResponseDTO recipeCheck =
                 recipeCheckerService.canMakeRecipe(recipeId);
@@ -101,6 +107,7 @@ public class ShoppingListServiceImpl implements ShoppingListService{
                 item.setUnitAmountType(ingredient.requiredUnit());
                 item.setUser(currentUser);
                 item.setSourceRecipeId(recipeId);
+                item.setRecipeName(recipe.getName());
                 item.setPurchased(false);
 
                 ShoppingListEntity saved = shoppingListRepository.save(item);

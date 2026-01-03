@@ -12,6 +12,7 @@ public record ShoppingListResponseDTO(
         UnitAmountType unitAmountType,
         boolean isPurchased,
         Long sourceRecipeId,
+        String recipeName,
         LocalDateTime addedDate
 ){
 }
