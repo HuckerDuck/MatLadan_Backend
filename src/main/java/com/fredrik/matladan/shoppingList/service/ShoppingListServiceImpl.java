@@ -38,8 +38,13 @@ public class ShoppingListServiceImpl implements ShoppingListService{
         //? This will throw an exception if the user is not logged in
         CustomUser currentUser = getCurrentUser();
 
-        //? Then map from DTO to Entity
         ShoppingListEntity shoppingListEntity = shoppingListMapper.toEntity(createShoppingListDTO, currentUser);
+
+        // Set the recipe name to the database
+        // Use the name using the id of the recipe that you're using
+        if (shoppingListEntity.getSourceRecipeId() != null) {
+            setRecipeNameFromSourceRecipeId(shoppingListEntity);
+        }
 
         ShoppingListEntity savedShoppingList = shoppingListRepository.save(shoppingListEntity);
 
@@ -129,5 +134,11 @@ public class ShoppingListServiceImpl implements ShoppingListService{
 
         return customUserRepository.findByUsername(username)
                 .orElseThrow(UserIsNotLoggedInException::new);
+    }
+
+    private void setRecipeNameFromSourceRecipeId(ShoppingListEntity entity) {
+        RecipeEntity recipe = recipeRepository.findById(entity.getSourceRecipeId())
+                .orElseThrow(() -> new RuntimeException("Recipe not found with id: " + entity.getSourceRecipeId()));
+        entity.setRecipeName(recipe.getName());
     }
 }
