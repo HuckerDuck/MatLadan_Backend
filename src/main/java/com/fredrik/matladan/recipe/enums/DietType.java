@@ -5,5 +5,7 @@ public enum DietType {
     //? This can be used later to filter recipes by diet type
     MEAT,
     VEGETARIAN,
-    VEGAN
+    VEGAN,
+    FISH,
+    CHICKEN
 }
