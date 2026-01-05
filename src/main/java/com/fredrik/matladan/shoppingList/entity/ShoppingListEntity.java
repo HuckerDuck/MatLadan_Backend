@@ -41,7 +41,7 @@ public class ShoppingListEntity {
     //? Here we have a boolean that we can check mark incase the item is purchased
     //?
     @Column(name = "is_purchased")
-    private boolean Purchased = false;
+    private boolean purchased = false;
 
     //? This is the id of the recipe that the shopping list item is from
     //? This is used to link the shopping list item to the recipe
