@@ -16,7 +16,6 @@ public interface ShoppingListMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "addedDate", ignore = true)
     @Mapping(target = "user", ignore = true)
-    @Mapping(target = "purchased", constant = "false")
     ShoppingListEntity toEntity (CreateShoppingListDTO createShoppingListDTO, @Context CustomUser customUser);
 
     //! Entity -> ResponseDTO

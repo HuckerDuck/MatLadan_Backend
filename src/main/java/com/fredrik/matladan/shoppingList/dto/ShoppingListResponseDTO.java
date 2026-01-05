@@ -10,7 +10,7 @@ public record ShoppingListResponseDTO(
         String name,
         double quantity,
         UnitAmountType unitAmountType,
-        boolean isPurchased,
+        boolean purchased,
         Long sourceRecipeId,
         String recipeName,
         LocalDateTime addedDate
