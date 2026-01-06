@@ -1,33 +1,40 @@
 package com.fredrik.matladan.recipe.exceptions;
 
+import com.fredrik.matladan.user.advice.DTO.ApiErrorResponse;
+import com.fredrik.matladan.user.advice.DTO.ValidationError;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class RecipeExceptionsHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(RecipeExceptionsHandler.class);
 
     @ExceptionHandler(RecipeNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleRecipeNotFoundException(
-            RecipeNotFoundException ex) {
+    public ResponseEntity<ApiErrorResponse> handleRecipeNotFoundException(
+            RecipeNotFoundException exception,
+            HttpServletRequest request
+    ) {
+        logger.warn("Recipe not found: {}", exception.getMessage());
 
-        logger.error("Recipe not found: {}", ex.getMessage());
+        ApiErrorResponse apiErrorResponse = new ApiErrorResponse(
+                LocalDateTime.now(),
+                request.getRequestURI(),
+                HttpStatus.NOT_FOUND.value(),
+                List.of(new ValidationError(
+                        "recipe",
+                        "Receptet hittades inte"
+                ))
+        );
 
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put("timestamp", LocalDateTime.now());
-        errorResponse.put("status", HttpStatus.NOT_FOUND.value());
-        errorResponse.put("error", "Not Found");
-        errorResponse.put("message", ex.getMessage());
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiErrorResponse);
     }
 }
