@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Transactional
 @Service
@@ -106,14 +107,34 @@ public class ShoppingListServiceImpl implements ShoppingListService{
             //? We only really neeed to add something if it's missing
             if (ingredient.missingAmount() > 0) {
 
-                ShoppingListEntity item = new ShoppingListEntity();
-                item.setName(ingredient.ingredientName());
-                item.setQuantity(ingredient.missingAmount());
-                item.setUnitAmountType(ingredient.requiredUnit());
-                item.setUser(currentUser);
-                item.setSourceRecipeId(recipeId);
-                item.setRecipeName(recipe.getName());
-                item.setPurchased(false);
+                //? Check if this ingredient already exists in the shopping list
+                //? If it does, we just increase the quantity instead of creating a a new item
+                Optional<ShoppingListEntity> existingItem =
+                        shoppingListRepository.findByNameAndUnitAmountTypeAndUserIdAndPurchasedFalse(
+                                ingredient.ingredientName(),
+                                ingredient.requiredUnit(),
+                                currentUser.getId()
+                        );
+
+                ShoppingListEntity item;
+
+                if (existingItem.isPresent()) {
+                    // Item already exists, just increase the quantity
+                    item = existingItem.get();
+                    item.setQuantity(item.getQuantity() + ingredient.missingAmount());
+                }
+
+                else {
+                    // If not, then create a new shoppingList
+                    item = new ShoppingListEntity();
+                    item.setName(ingredient.ingredientName());
+                    item.setQuantity(ingredient.missingAmount());
+                    item.setUnitAmountType(ingredient.requiredUnit());
+                    item.setUser(currentUser);
+                    item.setSourceRecipeId(recipeId);
+                    item.setRecipeName(recipe.getName());
+                    item.setPurchased(false);
+                }
 
                 ShoppingListEntity saved = shoppingListRepository.save(item);
                 shoppingList.add(shoppingListMapper.toResponseDTO(saved));
