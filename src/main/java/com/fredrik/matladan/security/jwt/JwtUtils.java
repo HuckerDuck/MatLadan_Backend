@@ -37,7 +37,6 @@ public class JwtUtils {
     }
 
     public String generateJwtToken(CustomUser user){
-        logger.debug("Generating JWT for user {}", user.getUsername());
 
         String token = Jwts.builder()
                 .subject(user.getUsername())
@@ -47,7 +46,6 @@ public class JwtUtils {
                 .signWith(getTheKeyForSigningIn())
                 .compact();
 
-        logger.debug("Generated JWT for user {}", user.getUsername());
         return token;
     }
 
@@ -60,7 +58,7 @@ public class JwtUtils {
                     .getPayload();
 
             String username = claims.getSubject();
-            logger.debug("Username from JWT token: {}", username);
+
             return username;
         }
 
