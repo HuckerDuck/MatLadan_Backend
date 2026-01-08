@@ -63,7 +63,9 @@ public class CorsConfig {
         //! Hopefully to see that it wörks with Render Native properly
 
         CorsConfig.setAllowedHeaders(List.of("*"));
-        CorsConfig.setAllowCredentials(true);
+
+        //? Putting this to false since am using React Native Expo
+        CorsConfig.setAllowCredentials(false);
         CorsConfig.setAllowedOriginPatterns(List.of("*"));
 
         //? Then we register it for all diffrent path that there are

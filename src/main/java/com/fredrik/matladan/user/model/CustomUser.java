@@ -66,8 +66,11 @@ public class CustomUser {
         this.updatedAt = this.createdAt;
 
         //? Check if enabled is null then set it to true
+        //?
+        //? Small change for security
+        //? User will be not enabled
         if(enabled == null){
-            this.enabled = true;
+            this.enabled = false;
         }
 
         if (role == null){

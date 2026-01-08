@@ -36,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException , IOException {
-        logger.debug("---- JwtAuthenticationFilter START ----" );
+
         // Extract token
         String token = extractJwtFromCookie (request);
         if (token == null) {
@@ -47,7 +47,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain .doFilter(request, response);
             return;
         }
-        logger.debug("JWT token found: {}" , token);
 
         // Validate token
         if (jwtUtils .validateJwtToken (token)) {
@@ -63,7 +62,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             );
                     authentication. setDetails (new WebAuthenticationDetailsSource ().buildDetails (request));
                     SecurityContextHolder .getContext ().setAuthentication (authentication );
-                    logger.debug("Authenticated (DB verified) user '{}'" , username );
                 } else {
                     logger.warn("User '{}' not found or disabled" , username );
                 }
@@ -73,7 +71,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         // Continue the filter chain
         filterChain .doFilter (request, response );
-        logger.debug("---- JwtAuthenticationFilter END ----" );
     }
 
     private String extractJwtFromCookie(HttpServletRequest request) {

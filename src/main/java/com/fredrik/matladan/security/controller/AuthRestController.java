@@ -59,8 +59,6 @@ public class AuthRestController {
         String username = loginRequest.getUsername();
         String password = loginRequest.getPassword();
 
-        logger.info("Authentication successful for user: {}", username);
-
         // Step 1: Perform authentication
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(username, password)
