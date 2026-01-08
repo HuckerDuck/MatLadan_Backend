@@ -70,7 +70,7 @@ public class CustomUser {
         //? Small change for security
         //? User will be not enabled
         if(enabled == null){
-            this.enabled = false;
+            this.enabled = true;
         }
 
         if (role == null){
