@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Table(name = "verification_token")
-public class VerificationEntity {
+public class verificationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter (AccessLevel.NONE)
@@ -42,7 +42,7 @@ public class VerificationEntity {
         if (expirationDate == null) {
             //? Setting the expiration date of the token to be from now and 24 hours ahead
             //? After that the token should expire
-            expirationDate = LocalDateTime.now().plusHours(24);
+            expirationDate = LocalDateTime.now().plusHours(2);
         }
 
         if (token == null) {
