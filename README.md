@@ -9,7 +9,12 @@ Backend for my MatLådan project. A REST API for keeping track of what food you 
 ## What is this?
 
 MatLådan is a personal project I built to practice Spring Boot and REST APIs.
-The idea is simple — you log in, add what food you have (fridge/freezer/pantry), and manage recipes.
+The idea is simple ->
+1: You log in 
+2: add what food you have (fridge/freezer/pantry) 
+3: and manage recipes.
+4: The backend will look at what you already got in the database  
+5: Then caluculate what you are missing in the recipe
 
 Still working on it, but the backend is working with JWT auth, item storage and a recipe system.
 
@@ -17,12 +22,11 @@ Still working on it, but the backend is working with JWT auth, item storage and 
 
 ## Tech
 
-- Java 17 + Spring Boot
+- Java + Spring Boot
 - Spring Security + JWT
 - MySQL + Spring Data JPA
 - Lombok
 - Maven
-
 ---
 
 ## What it can do
