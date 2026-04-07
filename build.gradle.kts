@@ -25,17 +25,38 @@ repositories {
 }
 
 dependencies {
+    // For Spring Boot
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+
+    // For the Database
+    runtimeOnly("org.postgresql:postgresql")
+
+    // For the Flyway Migration
     implementation("org.flywaydb:flyway-core")
     implementation("org.flywaydb:flyway-database-postgresql")
+
+    //LOMBOK
     compileOnly("org.projectlombok:lombok")
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
-    runtimeOnly("org.postgresql:postgresql")
     annotationProcessor("org.projectlombok:lombok")
+
+    // MAPSTRUCT
+    // Both of these are needed for it to work
+    implementation("org.mapstruct:mapstruct:1.6.3")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.6.3")
+
+    // For test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("com.h2database:h2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // JWT Dependencies
+    implementation ("io.jsonwebtoken:jjwt-api:0.12.6" )
+    implementation ("io.jsonwebtoken:jjwt-impl:0.12.6" )
+    implementation ("io.jsonwebtoken:jjwt-jackson:0.12.6" )
 }
 
 tasks.withType<Test> {
