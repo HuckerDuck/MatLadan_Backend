@@ -16,7 +16,6 @@ public class CustomUserMapper {
     //! So I changed that
     public CustomUser toEntity(CreateUserDTO createUserDTO) {
         CustomUser customUser = new CustomUser();
-        customUser.setUsername(createUserDTO.username());
         customUser.setEmail(createUserDTO.email());
 
         return customUser;
@@ -24,7 +23,6 @@ public class CustomUserMapper {
 
     public CustomUserResponseDTO toResponseDTO(CustomUser customUser) {
         return new CustomUserResponseDTO(
-                customUser.getUsername(),
                 customUser.getEmail()
         );
     }

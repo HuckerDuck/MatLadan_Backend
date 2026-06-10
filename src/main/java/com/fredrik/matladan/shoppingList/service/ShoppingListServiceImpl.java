@@ -153,7 +153,7 @@ public class ShoppingListServiceImpl implements ShoppingListService{
 
         String username = auth.getName();
 
-        return customUserRepository.findByUsername(username)
+        return customUserRepository.findByEmail(username)
                 .orElseThrow(UserIsNotLoggedInException::new);
     }
 

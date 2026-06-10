@@ -39,7 +39,7 @@ public class JwtUtils {
     public String generateJwtToken(CustomUser user){
 
         String token = Jwts.builder()
-                .subject(user.getUsername())
+                .subject(user.getEmail())
                 .claim("authorities", List.of("ROLE_" + user.getRole().name()))
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
@@ -63,7 +63,7 @@ public class JwtUtils {
         }
 
         catch (Exception e){
-            logger.error("Error while getting the username from the JWT token", e.getMessage());
+            logger.error("Error while getting the email from the JWT token", e.getMessage());
             return null;
         }
     }

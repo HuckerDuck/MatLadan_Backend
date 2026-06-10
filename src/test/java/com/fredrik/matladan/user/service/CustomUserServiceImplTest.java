@@ -5,17 +5,12 @@ import com.fredrik.matladan.user.dto.CustomUserResponseDTO;
 import com.fredrik.matladan.user.mapper.CustomUserMapper;
 import com.fredrik.matladan.user.model.CustomUser;
 import com.fredrik.matladan.user.repository.CustomUserRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.sql.SQLOutput;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -47,18 +42,18 @@ class CustomUserServiceImplTest {
     void createUser_ShouldReturnCorretly(){
          //? Arrange and prepare for
         CreateUserDTO createUserDTO = new CreateUserDTO(
-                "username",
                 "password",
-                "example@hotmail.com");
+                "password"
+        );
+
 
         CustomUser customUser = new CustomUser();
-        customUser.setUsername("testUsername");
         customUser.setEmail("testEmail");
         customUser.setPasswordHash("passwordhash");
 
         CustomUserResponseDTO customUserResponseDTO = new CustomUserResponseDTO(
-                "testUsername",
-                "testEmail");
+                "testUsername"
+        );
 
         when(customUserMapper.toEntity(createUserDTO)).thenReturn(customUser);
         when(customUserRepository.save(customUser)).thenReturn(customUser);
@@ -68,7 +63,7 @@ class CustomUserServiceImplTest {
 
 
 
-        assertEquals("testUsername", result.username());
+        assertEquals("testUsername", result.email());
 
         System.out.println();
         System.out.println("Expect that the response from the ResponseDTO");

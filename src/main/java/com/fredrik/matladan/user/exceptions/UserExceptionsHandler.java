@@ -29,7 +29,7 @@ public class UserExceptionsHandler {
                 request.getRequestURI(),
                 HttpStatus.CONFLICT.value(),
                 List.of(new ValidationError(
-                        "username",
+                        "email",
                         "Användarnamnet är redan taget"
                 ))
         );
