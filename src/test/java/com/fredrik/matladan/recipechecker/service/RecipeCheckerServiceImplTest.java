@@ -44,7 +44,7 @@ class RecipeCheckerServiceImplTest {
     @BeforeEach
     void setUp() {
         CustomUser testUser = new CustomUser();
-        testUser.setUsername("testuser");
+        testUser.setEmail("testuser@gmail.com");
 
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getPrincipal()).thenReturn(testUser);

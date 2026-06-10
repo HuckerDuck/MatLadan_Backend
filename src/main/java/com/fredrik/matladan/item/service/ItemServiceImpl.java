@@ -161,7 +161,7 @@ public class ItemServiceImpl implements ItemService{
 
         String username = auth.getName();
 
-        return customUserRepository.findByUsername(username)
-                .orElseThrow(() -> new UserIsNotLoggedInException());
+        return customUserRepository.findByEmail(username)
+                .orElseThrow(UserIsNotLoggedInException::new);
     }
 }

@@ -61,7 +61,6 @@ class ItemServiceImplTest {
     void setUp() {
         //? Add a Test User that we will use
         testingUser = new CustomUser();
-        testingUser.setUsername("TestUser");
         testingUser.setEmail("");
 
         //? Add a Testing item that we will use
@@ -97,12 +96,10 @@ class ItemServiceImplTest {
         );
 
 
-        when(authentication.getName()).thenReturn(testingUser.getUsername());
+        when(authentication.getName()).thenReturn(testingUser.getEmail());
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        when(customUserRepository.findByUsername("TestUser"))
-                .thenReturn(Optional.of(testingUser));
 
     }
 

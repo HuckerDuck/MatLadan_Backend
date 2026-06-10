@@ -39,16 +39,12 @@ public class CustomUserServiceImpl implements CustomUserService{
 
     @Transactional
     public CustomUserResponseDTO createUser (CreateUserDTO createUserDTO){
-        //? Trim is nice and is used to remove spaces from the username
+        //? Trim is nice and is used to remove spaces from the email
         //? Makes " Fredrik " into "Fredrik"
-        //? Also makes sure that the username is unique
-        String trimmedUsername = createUserDTO.username().trim();
+        //? Also makes sure that the email is unique
         String toLowerCaseEmail = createUserDTO.email().toLowerCase();
 
-        //? Make a check if the Username already exists
-        if (repository.findByUsername(trimmedUsername).isPresent()){
-            throw new UserAlreadyExistsException(createUserDTO.username());
-        }
+
 
         //? Make a check if the email already exist
         if(repository.findByEmail(toLowerCaseEmail).isPresent()){
@@ -58,7 +54,7 @@ public class CustomUserServiceImpl implements CustomUserService{
         //? Mapper DTO -> Entity
         CustomUser customUser = mapper.toEntity(createUserDTO);
 
-        customUser.setUsername(trimmedUsername);
+
         customUser.setEmail(toLowerCaseEmail);
         customUser.setPasswordHash(passwordEncoder.encode(createUserDTO.password()));
 
@@ -70,24 +66,6 @@ public class CustomUserServiceImpl implements CustomUserService{
         return mapper.toResponseDTO(savedUser);
     }
 
-    //?
-    //? Find a User by username
-    //?
-
-    @Override
-    @Transactional
-    public CustomUserResponseDTO findByUsername(String username) {
-        String trimmedUsername = username.trim();
-
-        Optional<CustomUser> user = repository.findByUsername(trimmedUsername);
-
-        //? Check if the user exists or not
-        if (user.isEmpty()){
-            throw new UserNotFoundException(username);
-        }
-
-        return mapper.toResponseDTO(user.get());
-     }
 
 
     //?
@@ -100,7 +78,7 @@ public class CustomUserServiceImpl implements CustomUserService{
         String trimmedUsername = username.trim();
         String toLowerCaseEmail = email.toLowerCase();
 
-        Optional<CustomUser> user = repository.findByUsername(trimmedUsername);
+        Optional<CustomUser> user = repository.findByEmail(trimmedUsername);
 
         //? Check if the user exists or not
         if (user.isEmpty()){
@@ -129,7 +107,7 @@ public class CustomUserServiceImpl implements CustomUserService{
     public void disableUser(String username) {
         String trimmedUsername = username.trim();
 
-        Optional<CustomUser> customUser = repository.findByUsername(trimmedUsername);
+        Optional<CustomUser> customUser = repository.findByEmail(trimmedUsername);
 
         //? Check if the user exists or not
         if (customUser.isEmpty()){
