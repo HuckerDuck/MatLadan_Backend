@@ -26,16 +26,5 @@ public class CustomUserController {
         return ResponseEntity.ok(users);
     }
 
-    //
-    // Get a User by username
-    //
-    @GetMapping("/{username}")
-    public ResponseEntity<CustomUserResponseDTO> getUserByUsername(
-            @PathVariable String username
-    ){
-        CustomUserResponseDTO user = userService.findByUsername(username);
-        return ResponseEntity.ok(user);
-    }
-
     //! Missing a disable user endpoint
 }

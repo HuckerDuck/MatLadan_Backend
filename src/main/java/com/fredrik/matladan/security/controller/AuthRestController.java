@@ -40,10 +40,10 @@ public class AuthRestController {
     /**
      * Login Endpoint for the user loggin in
      *
-     * Accepts JSON {"username": "user
+     * Accepts JSON {"email": "user
      *               "password": "password}
      *
-     * @param loginRequest DTO which is containing username and password from
+     * @param loginRequest DTO which is containing email and password from
      *                     a request bod
      * @return User information and a JWT token for the user
      *         Token should be stored in SecureStore in Frontend (React Native with Expo)
@@ -56,12 +56,12 @@ public class AuthRestController {
             //? We use the information in it to authenticate the user
             @RequestBody LoginRequest loginRequest
     ) {
-        String username = loginRequest.getEmail();
+        String email = loginRequest.getEmail().toLowerCase().trim();
         String password = loginRequest.getPassword();
 
         // Step 1: Perform authentication
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password)
+                new UsernamePasswordAuthenticationToken(email, password)
         );
 
         Object principal = authentication.getPrincipal();
@@ -80,10 +80,10 @@ public class AuthRestController {
 
         String token = jwtUtils.generateJwtToken(customUserDetails.getUser());
 
-        logger.info("Authentication successful for user", username);
+        logger.info("Authentication successful for user", email);
 
         return ResponseEntity.ok(Map.of(
-                "username", username,
+                "email", email,
                 "authorities", customUserDetails.getAuthorities(),
                 "token", token
         ));
