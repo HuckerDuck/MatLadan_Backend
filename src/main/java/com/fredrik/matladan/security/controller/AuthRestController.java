@@ -56,7 +56,7 @@ public class AuthRestController {
             //? We use the information in it to authenticate the user
             @RequestBody LoginRequest loginRequest
     ) {
-        String username = loginRequest.getUsername();
+        String username = loginRequest.getEmail();
         String password = loginRequest.getPassword();
 
         // Step 1: Perform authentication
