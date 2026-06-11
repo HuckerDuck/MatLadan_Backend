@@ -1,8 +1,11 @@
 package com.fredrik.matladan.security.controller;
 import com.fredrik.matladan.security.dto.LoginRequest;
+import com.fredrik.matladan.security.dto.VerifyOTPRequest;
 import com.fredrik.matladan.security.jwt.JwtUtils;
+import com.fredrik.matladan.security.service.VerificationService;
 import com.fredrik.matladan.user.dto.CreateUserDTO;
 import com.fredrik.matladan.user.dto.CustomUserResponseDTO;
+import com.fredrik.matladan.user.repository.CustomUserRepository;
 import com.fredrik.matladan.user.service.CustomUserService;
 import com.fredrik.matladan.user.userdetails.CustomUserDetailsImpl;
 import jakarta.validation.Valid;
@@ -26,6 +29,8 @@ public class AuthRestController {
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
     private final CustomUserService userService;
+    private final VerificationService verificationService;
+    private final CustomUserRepository customUserRepository;
 
 
 
@@ -88,4 +93,13 @@ public class AuthRestController {
                 "token", token
         ));
     }
+
+    @PostMapping("/verify")
+    public ResponseEntity<Map<String, String>> verifyEmail(
+            @Valid @RequestBody VerifyOTPRequest request
+    ) {
+        verificationService.verifyEmail(request.email(), request.otp());
+        return ResponseEntity.ok(Map.of("message", "Email verified successfully. You can now log in."));
+    }
+
 }
