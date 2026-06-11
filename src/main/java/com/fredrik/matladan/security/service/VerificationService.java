@@ -3,8 +3,9 @@ package com.fredrik.matladan.security.service;
 import com.fredrik.matladan.user.model.CustomUser;
 
 public interface VerificationService {
-
-    //? Method for adding token to the user
-    String createTokenForUser (CustomUser user);
+    void sendVerificationOtp(CustomUser user);
+    void sendPasswordResetOtp(CustomUser user);
+    void verifyEmail(String email, String otp);
+    void verifyPasswordResetOtp(String email, String otp);
 
 }

@@ -54,80 +54,40 @@ public class CustomUserServiceH2DatabaseTest {
     @BeforeEach
     public void setUp() {
         createUserDTO = new CreateUserDTO(
-                "BennyTest",
-                "Password123",
-                //? Not that this will still be set to benny@example.test because of the
-                //? .ToLowerCase in the Serviceimpl
-                "BeNny@example.test"
+                "Test@1234",
+                "test@example.com"
         );
     }
 
-    @AfterEach
-    void tearDown() {
-        customUserRepository.deleteAll();
-    }
-
     @Test
-    @DisplayName("Should create a User and Password and return a ResponseDTO without the Password")
-    public void createUserTest(){
-        //? Part 2 - Act
-        CustomUserResponseDTO responseDTORetults = customUserService.createUser(createUserDTO);
-
-        //? Part 3 - Assert
-
-        //Expect this not to be empty
-        assertNotNull(responseDTORetults);
-
-        // Expect the username to be the same as in the Setup above
-        assertEquals("BennyTest", responseDTORetults.username());
-
-        // Expect the email to be the as in the Setup above
-        assertEquals("benny@example.test", responseDTORetults.email());
+    @DisplayName("Should create a User and return a ResponseDTO without the Password")
+    public void createUserTest() {
+        CustomUserResponseDTO result = customUserService.createUser(createUserDTO);
+        assertNotNull(result);
+        assertEquals("test@example.com", result.email());
     }
 
     @Test
     @DisplayName("Saved user in the database should have password hashed")
-    void createdUserTestShouldReturnWithAPasswordThatIsHashed(){
-        //? Step 2 - Act
-        CustomUserResponseDTO responseDTORetults = customUserService.createUser(createUserDTO);
-
-        //? Step 3 - Assert
-        //? We use the repository to find the user we have added above in the H2 database
-        Optional<CustomUser> customUserSaved = customUserRepository.findByUsername("BennyTest");
-
-        //? We expect the user to be saved in the database
-        assertTrue(customUserSaved.isPresent());
-
-        assertEquals("BennyTest", customUserSaved.get().getUsername());
-
-        assertEquals("benny@example.test", customUserSaved.get().getEmail());
-
-        //? We expect that the password isn't the same anymore since it should be hashed
-        //? If we set this to true then the test will fail since we won't get
-        //? Password123 but the long hash instead
-        assertNotEquals("Password123", customUserSaved.get().getPasswordHash());
+    void createdUserTestShouldReturnWithAPasswordThatIsHashed() {
+        customUserService.createUser(createUserDTO);
+        Optional<CustomUser> saved = customUserRepository.findByEmail("test@example.com");
+        assertTrue(saved.isPresent());
+        assertEquals("test@example.com", saved.get().getEmail());
+        assertNotEquals("Test@1234", saved.get().getPasswordHash());
     }
 
     @Test
-    @DisplayName("Duplicated user inserted, this should throw a exception")
-
-    void createdDuplicatedCustomUserShouldThrowException(){
-        //? Step 1 - Arrange
+    @DisplayName("Duplicated email should throw exception")
+    void createdDuplicatedEmailShouldThrowException() {
         customUserService.createUser(createUserDTO);
-
-        //? We had a new user, note that 1 in already added since we before
-        CreateUserDTO createUserDuplicate = new CreateUserDTO(
-                "BennyTest",
-                "abadpassword123",
-                "BennyTestTheSecond@Example.kristoffer"
+        CreateUserDTO duplicate = new CreateUserDTO(
+                "Other@1234",
+                "test@example.com"
         );
-
-        //? Step 2 and 3 - Act & Assert
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            customUserService.createUser(createUserDuplicate);
+            customUserService.createUser(duplicate);
         });
-
-        assertEquals("User with username BennyTest already exists in the database", exception.getMessage());
-
+        assertEquals("User with email test@example.com already exists in the database", exception.getMessage());
     }
 }

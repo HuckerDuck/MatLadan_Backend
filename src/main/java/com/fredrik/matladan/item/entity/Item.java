@@ -1,5 +1,6 @@
 package com.fredrik.matladan.item.entity;
 
+import com.fredrik.matladan.household.model.Household;
 import com.fredrik.matladan.item.enums.StorageLocation;
 import com.fredrik.matladan.item.enums.UnitAmountType;
 import com.fredrik.matladan.user.model.CustomUser;
@@ -54,6 +55,10 @@ public class Item {
     @Enumerated(EnumType.STRING)
     @Column(name = "unit_amount_type")
     private UnitAmountType unitAmountType;
+
+    @ManyToOne
+    @JoinColumn(name = "household_id")
+    private Household household;
 
     @PrePersist
     void onCreatingAnItem(){

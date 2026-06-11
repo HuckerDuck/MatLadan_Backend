@@ -12,6 +12,6 @@ import lombok.Setter;
 //? This is the request body for the login endpoint
 //? This will be used later when we send this from FrontEnd
 public class LoginRequest {
-    private String username;
+    private String email;
     private String password;
 }

@@ -23,10 +23,6 @@ public class CustomUser {
     @Column (updatable = false, nullable = false)
     private UUID id;
 
-    //? Unique Username that is sent to the database
-    @Column(unique = true, nullable = false)
-    private String username;
-
     // Hashed password so that you can directly see what is written
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;

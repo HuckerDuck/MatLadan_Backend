@@ -1,180 +1,221 @@
-# MatLådan - Backend
+# MatLådan — Backend
 
-Backend for my MatLådan project. A REST API for keeping track of what food you have at home and managing recipes.
-
-> **Note:** All code is written by me. I only used AI to help structure this README, but reviewed and approved the content in the README myself.
+A REST API for a family food inventory and meal planning app. Built with Spring Boot and deployed on Render, using Supabase (PostgreSQL) as the database.
 
 ---
 
----
-## What is this?
+## What it does
 
-MatLådan is a personal project I built to practice Spring Boot and REST APIs.
-The idea is simple:
+MatLådan helps families track what food they have at home, find recipes based on their current inventory, and manage shopping lists. The backend handles all data persistence, authentication, and business logic for the React Native mobile app.
 
-1. Log in
-2. Add what food you have at home (fridge, freezer or pantry)
-3. Browse and manage recipes
-4. The backend checks what ingredients you already have
-5. And tells you what you are missing to cook a specific recipe
-
-Still a work in progress, but JWT auth, item storage and the recipe system are up and running.
+Core features:
+- JWT-based authentication with role-based access control (USER / ADMIN)
+- Food inventory management — items categorized by storage location (fridge, freezer, pantry)
+- Recipe storage with ingredient matching against a user's current inventory
+- Shopping list management with support for auto-generating lists from missing recipe ingredients
+- User management with email-based accounts and account enable/disable
 
 ---
 
-## Tech
+## Tech stack
 
-- Java + Spring Boot
-- Spring Security + JWT
-- MySQL + Spring Data JPA
-- Lombok
-- Maven
----
-
-## What it can do
-
-**Items (food storage)**
-- Add items to Fridge, Freezer or Pantry
-- Track quantity, unit (gram, liter, pieces etc.) and expiry date
-- Search by name, filter by location
-- Pagination on all list endpoints
-- Every item is tied to the logged-in user — no one can see your stuff
-
-**Recipes**
-- Full CRUD on recipes
-- Each recipe has ingredients, instructions, prep/cook time, image URL
-- Filter by meal type (Breakfast, Lunch, Dinner, Snack)
-- Filter by diet type (Meat, Vegetarian, Vegan, Fish, Chicken)
-- Paginated with sort support
-
-**Auth**
-- JWT login
-- All item endpoints require you to be logged in
+| Layer | Technology | Why |
+|---|---|---|
+| Language | Java 21 | LTS release, modern features (records, pattern matching) |
+| Framework | Spring Boot 3.5 | Industry standard for Java REST APIs |
+| Security | Spring Security + JWT (JJWT 0.12) | Stateless auth — fits mobile clients well |
+| Database | PostgreSQL (Supabase) | Managed cloud DB, free tier for development |
+| Migrations | Flyway | Version-controlled schema changes, reproducible environments |
+| ORM | Spring Data JPA / Hibernate | Reduces boilerplate for standard queries |
+| Mapping | MapStruct | Compile-time DTO↔Entity mapping — no reflection overhead |
+| Validation | Jakarta Bean Validation | Declarative input validation on DTOs |
+| Build | Gradle (Kotlin DSL) | Faster builds than Maven, type-safe config |
+| Deploy | Render (Docker) | Simple container deploy with environment variable support |
 
 ---
 
-## Endpoints
+## Architecture
 
-### Items `/api/items`
+The project follows a domain-driven package structure. Each feature domain is self-contained with its own controller, service, repository, DTOs, mapper, and exceptions.
 
 ```
-GET    /api/items                          - get all items (current user)
-GET    /api/items/paged                    - paginated
-GET    /api/items/location?storageLocation=FRIDGE
-GET    /api/items/location/paged
-GET    /api/items/search?query=mjölk
-GET    /api/items/search/paged
-POST   /api/items                          - create item
-PATCH  /api/items/{id}                     - update item
-DELETE /api/items/{id}                     - delete item
-```
-
-### Recipes `/api/recipes`
-
-```
-GET    /api/recipes                        - all recipes (paginated)
-GET    /api/recipes/{id}
-POST   /api/recipes                        - create recipe
-PATCH  /api/recipes/{id}                   - update recipe
-DELETE /api/recipes/{id}                   - delete recipe
+com.fredrik.matladan/
+├── security/
+│   ├── config/          # CORS configuration
+│   ├── controller/      # Login and register endpoints
+│   ├── dto/             # LoginRequest DTO
+│   ├── jwt/             # JwtUtils + JwtAuthenticationFilter
+│   ├── securityConfig/  # SecurityFilterChain setup
+│   └── service/         # Verification token service
+├── user/
+│   ├── controller/      # User management endpoints
+│   ├── dto/             # CreateUserDTO, CustomUserResponseDTO
+│   ├── enums/           # CustomUserRole, CustomUserPermissions
+│   ├── exceptions/      # UserNotFoundException etc. + handler
+│   ├── mapper/          # MapStruct mapper
+│   ├── model/           # CustomUser JPA entity
+│   ├── repository/      # JPA repository
+│   ├── service/         # Business logic
+│   └── userdetails/     # Spring Security UserDetails implementation
+├── item/                # Food inventory (same structure as user/)
+├── recipe/              # Recipe management
+├── recipechecker/       # Ingredient matching logic
+└── shoppingList/        # Shopping list management
 ```
 
 ---
 
-## Example – Create Item
+## Key technical decisions
 
-```json
-POST /api/items
-{
-  "name": "Mjölk",
-  "storageLocation": "FRIDGE",
-  "quantity": 2,
-  "sizeOfUnit": 1.0,
-  "unitAmountType": "LITER",
-  "expiryDate": "2025-06-01"
-}
-```
+**Why JWT instead of sessions?**
+The frontend is a React Native mobile app. Sessions require cookies which are cumbersome on mobile clients. 
+JWT tokens stored in SecureStore (Expo) work cleanly across iOS and Android without session state on the server.
 
-## Example – Create Recipe
+**Why CSRF is disabled**
+CSRF attacks rely on browsers automatically sending cookies with requests. 
+Since this API uses JWT tokens in Authorization headers, CSRF protection adds no security benefit and would break mobile clients.
 
-```json
-POST /api/recipes
-{
-  "name": "Veggie Pasta",
-  "description": "Simple and healthy pasta",
-  "instructions": "Boil pasta. Fry vegetables. Mix together.",
-  "imageURL": "https://example.com/pasta.jpg",
-  "servings": 2,
-  "prepTime": 10,
-  "cookTime": 20,
-  "mealType": "DINNER",
-  "dietType": "VEGETARIAN",
-  "ingredients": [
-    { "name": "Pasta", "quantity": 200, "unitAmountType": "GRAM" },
-    { "name": "Tomato", "quantity": 2, "unitAmountType": "PIECES" }
-  ]
-}
-```
+**Why Flyway for migrations?**
+The database schema is version-controlled alongside the code. 
+Every environment runs the same migration history. 
+
+**Why MapStruct instead of manual mapping?**
+MapStruct generates mapping code at compile time, not runtime. This means mapping errors are caught during the build, not in production.
+It also has zero reflection overhead compared to libraries like ModelMapper.
 
 ---
 
-## Project Structure
+## Authentication flow
 
 ```
-src/
-├── item/
-│   ├── controller/     # REST endpoints
-│   ├── service/        # Business logic
-│   ├── repository/     # DB access
-│   ├── entity/         # JPA entity
-│   ├── dto/            # Request/Response objects
-│   ├── mapper/         # DTO <-> Entity
-│   ├── enums/          # StorageLocation, UnitAmountType
-│   └── exceptions/     # Custom error handling
-│
-└── recipe/
-    ├── controller/
-    ├── service/
-    ├── repository/
-    ├── model/
-    ├── dto/
-    ├── mapper/
-    ├── enums/          # DietType, MealType
-    └── exceptions/
+POST /api/auth/register    →  Creates user (enabled=true, role=USER)
+POST /api/auth/login       →  Returns JWT token (24h expiry)
+
+All other endpoints        →  Require "Authorization: Bearer <token>" header
 ```
+
+The `JwtAuthenticationFilter` runs on every request. It extracts the token from either the `Authorization` header or an `authToken` cookie, validates it, and loads the user from the database to populate the Spring Security context.
 
 ---
 
-## Run locally
+## API endpoints
 
-You need Java 17+, MySQL and Maven.
+### Auth
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| POST | `/api/auth/register` | Public | Create new account |
+| POST | `/api/auth/login` | Public | Authenticate and receive JWT |
+
+### Items (food inventory)
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| GET | `/api/items` | Authenticated | Get all items for current user |
+| GET | `/api/items/paged` | Authenticated | Paginated item list |
+| GET | `/api/items/location?storageLocation=FRIDGE` | Authenticated | Filter by location |
+| GET | `/api/items/search?query=mjölk` | Authenticated | Search by name |
+| POST | `/api/items` | Authenticated | Add new item |
+| PATCH | `/api/items/{id}` | Authenticated | Update item |
+| DELETE | `/api/items/{id}` | Authenticated | Remove item |
+
+### Recipes
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| GET | `/api/recipes` | Authenticated | Get all recipes |
+| POST | `/api/recipes` | Authenticated | Create recipe |
+| PATCH | `/api/recipes/{id}` | Authenticated | Update recipe |
+| DELETE | `/api/recipes/{id}` | Authenticated | Delete recipe |
+
+### Recipe checker
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| GET | `/api/recipechecker/{recipeId}` | Authenticated | Check if user can make a recipe — returns match percentage and missing ingredients |
+
+### Shopping list
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| GET | `/api/shoppinglist` | Authenticated | Get current shopping list |
+| POST | `/api/shoppinglist` | Authenticated | Add item to list |
+| PATCH | `/api/shoppinglist/{id}` | Authenticated | Update item (e.g. mark purchased) |
+| DELETE | `/api/shoppinglist/{id}` | Authenticated | Remove item |
+| POST | `/api/shoppinglist/from-recipe/{recipeId}` | Authenticated | Auto-generate list from missing recipe ingredients |
+
+### Users (admin only)
+| Method | Path | Access | Description |
+|--------|------|--------|-------------|
+| GET | `/api/users/getallusers` | ADMIN | List all users |
+
+---
+
+## Database schema
+
+9 Flyway migrations (V1–V9):
+
+- `V1` — users table
+- `V2` — items table with user foreign key
+- `V3` — recipes + recipe_ingredients tables
+- `V4` — shopping_list table
+- `V5` — added recipe_name to shopping list
+- `V6` — added diet and meal type categories to recipes
+- `V7` — verification_token table
+- `V8` — removed username column (email-only auth)
+- `V9` — enabled Row Level Security on all tables (Supabase requirement)
+
+---
+
+## Running locally
+
+### Prerequisites
+- Java 21
+- A Supabase project (or any PostgreSQL database)
+
+### Environment variables
+
+Create a `.env` file based on `.env.example`:
+
+```
+DB_HOST=your-supabase-host
+DB_PORT=5432
+DB_NAME=postgres
+DB_USERNAME=postgres
+DB_PASSWORD=your-password
+JWT_SECRET=your-base64-encoded-secret-min-32-bytes
+JWT_EXPIRATION=86400000
+PORT=8080
+```
+
+The JWT secret must be at least 256 bits (32 bytes) after Base64 decoding. Generate one with:
+```bash
+openssl rand -base64 32
+```
+
+### Start the server
 
 ```bash
-git clone https://github.com/your-username/matladan-backend.git
-cd matladan-backend
+./gradlew bootRun
 ```
 
-Create a database:
-```sql
-CREATE DATABASE matladan;
-```
-
-Set up `application.properties`:
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/matladan
-spring.datasource.username=your_username
-spring.datasource.password=your_password
-spring.jpa.hibernate.ddl-auto=update
-```
-
-Run it:
-```bash
-mvn spring-boot:run
-```
-
-API runs on `http://localhost:8080`
+API available at `http://localhost:8080`
 
 ---
 
-## Author
-HuckerDuck aka Fredrik— Java developer student based in Stockholm.
+## Docker
+
+The included `Dockerfile` uses a multi-stage build:
+1. Build stage — compiles with Gradle on JDK 21
+2. Run stage — runs the JAR on a minimal Alpine JRE 21 image
+
+```bash
+docker build -t matladan-backend .
+docker run -p 8080:8080 --env-file .env matladan-backend
+```
+
+---
+
+## What's next
+
+- Email verification with OTP on registration
+- Forgot password flow
+- Refresh tokens with shorter access token lifetime (15 min)
+- Barcode scanning support (Open Food Facts API integration)
+- Household sharing onto multiple users sharing one inventory
+- Child profiles and kid-favourite recipe tagging
