@@ -51,13 +51,14 @@ public class CustomUserServiceImpl implements CustomUserService{
             throw new EmailAlreadyExistsException(toLowerCaseEmail);
         }
 
+
         //? Mapper DTO -> Entity
         CustomUser customUser = mapper.toEntity(createUserDTO);
 
 
         customUser.setEmail(toLowerCaseEmail);
         customUser.setPasswordHash(passwordEncoder.encode(createUserDTO.password()));
-
+        customUser.setEnabled(false);
         CustomUser savedUser = repository.save(customUser);
 
         //? Mapper Entity -> Response DTO

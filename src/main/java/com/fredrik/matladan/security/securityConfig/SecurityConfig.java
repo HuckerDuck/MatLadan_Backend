@@ -48,8 +48,14 @@ public class SecurityConfig {
                 .authorizeHttpRequests( auth -> auth
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/auth/register").permitAll()
+
+                        .requestMatchers("/api/auth/verify").permitAll()
+                        .requestMatchers("/api/auth/resend-verification").permitAll()
+
+                        // Has to have the role of admin
                         .requestMatchers("/api/users/{username}").hasRole("ADMIN")
                         .requestMatchers("/api/users/getallusers").hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
 
