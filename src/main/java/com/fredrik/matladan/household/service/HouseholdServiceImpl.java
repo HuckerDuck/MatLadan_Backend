@@ -70,7 +70,7 @@ public class HouseholdServiceImpl implements HouseholdService{
         HouseholdInvite invite = new HouseholdInvite();
         invite.setHousehold(household);
         invite.setInvitedEmail(normalizedEmail);
-        invite.setToken(UUID.randomUUID().toString());
+        invite.setToken(String.format("%06d", new java.security.SecureRandom().nextInt(1_000_000)));
         householdInviteRepository.save(invite);
 
         // Send invite email
