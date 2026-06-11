@@ -46,10 +46,18 @@ public class SecurityConfig {
                 // CSRF disabled för JWT
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests( auth -> auth
+                        // No login or so required for these
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/api/auth/register").permitAll()
+                        .requestMatchers("/api/auth/forgot-password").permitAll()
+                        .requestMatchers("/api/auth/reset-password").permitAll()
+                        .requestMatchers("/api/auth/verify").permitAll()
+                        .requestMatchers("/api/auth/resend-verification").permitAll()
+
+                        // Has to have the role of admin
                         .requestMatchers("/api/users/{username}").hasRole("ADMIN")
                         .requestMatchers("/api/users/getallusers").hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
 
