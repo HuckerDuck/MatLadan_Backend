@@ -5,6 +5,8 @@ import com.fredrik.matladan.security.jwt.JwtUtils;
 import com.fredrik.matladan.security.service.VerificationService;
 import com.fredrik.matladan.user.dto.CreateUserDTO;
 import com.fredrik.matladan.user.dto.CustomUserResponseDTO;
+import com.fredrik.matladan.user.exceptions.UserNotFoundException;
+import com.fredrik.matladan.user.model.CustomUser;
 import com.fredrik.matladan.user.repository.CustomUserRepository;
 import com.fredrik.matladan.user.service.CustomUserService;
 import com.fredrik.matladan.user.userdetails.CustomUserDetailsImpl;
@@ -34,27 +36,27 @@ public class AuthRestController {
 
 
 
-    @PostMapping(("/register"))
-    public ResponseEntity<CustomUserResponseDTO> addAUser(
+    @PostMapping("/register")
+    public ResponseEntity<Map<String, String>> addAUser(
             @Valid @RequestBody CreateUserDTO createUserDTO
-    ){
+    ) {
+
         CustomUserResponseDTO responseDTO = userService.createUser(createUserDTO);
-        return ResponseEntity.status(201).body(responseDTO);
+
+
+        CustomUser savedUser = customUserRepository.findByEmail(createUserDTO.email().toLowerCase())
+                .orElseThrow(() -> new UserNotFoundException(createUserDTO.email()));
+
+
+        verificationService.sendVerificationOtp(savedUser);
+
+
+        return ResponseEntity.status(201).body(Map.of(
+                "message", "Account created. Please check your email for a verification code.",
+                "email", responseDTO.email()
+        ));
     }
 
-    /**
-     * Login Endpoint for the user loggin in
-     *
-     * Accepts JSON {"email": "user
-     *               "password": "password}
-     *
-     * @param loginRequest DTO which is containing email and password from
-     *                     a request bod
-     * @return User information and a JWT token for the user
-     *         Token should be stored in SecureStore in Frontend (React Native with Expo)
-     *         Token now expires after 1 hour
-     **
-     **/
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(
             //? Add the DTO for the login request
