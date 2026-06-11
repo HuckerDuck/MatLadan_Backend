@@ -53,6 +53,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/reset-password").permitAll()
                         .requestMatchers("/api/auth/verify").permitAll()
                         .requestMatchers("/api/auth/resend-verification").permitAll()
+                        .requestMatchers("/api/auth/refresh").permitAll()
+                        .requestMatchers("/api/auth/logout").permitAll()
 
                         // Has to have the role of admin
                         .requestMatchers("/api/users/{username}").hasRole("ADMIN")
