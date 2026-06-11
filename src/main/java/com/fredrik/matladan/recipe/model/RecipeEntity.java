@@ -1,5 +1,6 @@
 package com.fredrik.matladan.recipe.model;
 
+import com.fredrik.matladan.household.model.Household;
 import com.fredrik.matladan.recipe.enums.DietType;
 import com.fredrik.matladan.recipe.enums.MealType;
 import jakarta.persistence.*;
@@ -37,6 +38,10 @@ public class RecipeEntity {
 
     @Column(name = "image_url", nullable = false, length = 500)
     private String imageURL;
+
+    @ManyToOne
+    @JoinColumn(name = "household_id")
+    private Household household;
 
     @Column(nullable = false)
     private Integer servings;
