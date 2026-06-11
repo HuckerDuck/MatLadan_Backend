@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -56,5 +57,9 @@ public class RefreshTokenService {
     @Transactional
     public void deleteAllForUser(CustomUser user) {
         refreshTokenRepository.deleteAllByUser(user);
+    }
+
+    public Optional<RefreshToken> findByToken(String token) {
+        return refreshTokenRepository.findByToken(token);
     }
 }

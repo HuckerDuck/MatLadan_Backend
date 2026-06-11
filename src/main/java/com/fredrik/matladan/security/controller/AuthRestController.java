@@ -4,6 +4,9 @@ import com.fredrik.matladan.security.dto.LoginRequest;
 import com.fredrik.matladan.security.dto.ResetPasswordRequest;
 import com.fredrik.matladan.security.dto.VerifyOTPRequest;
 import com.fredrik.matladan.security.jwt.JwtUtils;
+import com.fredrik.matladan.security.refreshtoken.RefreshToken;
+import com.fredrik.matladan.security.refreshtoken.dto.RefreshTokenRequestDTO;
+import com.fredrik.matladan.security.refreshtoken.service.RefreshTokenService;
 import com.fredrik.matladan.security.service.VerificationService;
 import com.fredrik.matladan.user.dto.CreateUserDTO;
 import com.fredrik.matladan.user.dto.CustomUserResponseDTO;
@@ -37,6 +40,7 @@ public class AuthRestController {
     private final VerificationService verificationService;
     private final CustomUserRepository customUserRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RefreshTokenService refreshTokenService;
 
 
 
@@ -138,10 +142,13 @@ public class AuthRestController {
 
         logger.info("Authentication successful for user", email);
 
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(customUserDetails.getUser());
+
         return ResponseEntity.ok(Map.of(
                 "email", email,
                 "authorities", customUserDetails.getAuthorities(),
-                "token", token
+                "accessToken", token,
+                "refreshToken", refreshToken.getToken()
         ));
     }
 
@@ -151,6 +158,41 @@ public class AuthRestController {
     ) {
         verificationService.verifyEmail(request.email(), request.otp());
         return ResponseEntity.ok(Map.of("message", "Email verified successfully. You can now log in."));
+    }
+
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(
+            @Valid @RequestBody RefreshTokenRequestDTO request
+    ) {
+        RefreshToken refreshToken = refreshTokenService.validateRefreshToken(request.refreshToken());
+
+        CustomUser user = refreshToken.getUser();
+
+        // Token rotation — delete old refresh token
+        refreshTokenService.deleteRefreshToken(request.refreshToken());
+
+        // Generate new tokens
+        String newAccessToken = jwtUtils.generateJwtToken(user);
+        RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(user);
+
+        logger.info("Token refreshed for user {}", user.getEmail());
+
+        return ResponseEntity.ok(Map.of(
+                "accessToken", newAccessToken,
+                "refreshToken", newRefreshToken.getToken()
+        ));
+    }
+
+
+    @PostMapping("/logout")
+    public ResponseEntity<Map<String, String>> logout(
+            @Valid @RequestBody RefreshTokenRequestDTO request
+    ) {
+        refreshTokenService.findByToken(request.refreshToken())
+                .ifPresent(rt -> refreshTokenService.deleteAllForUser(rt.getUser()));
+
+        return ResponseEntity.ok(Map.of("message", "Logged out successfully."));
     }
 
 }
