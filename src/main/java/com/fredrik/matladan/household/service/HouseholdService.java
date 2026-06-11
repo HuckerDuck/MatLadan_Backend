@@ -9,4 +9,7 @@ public interface HouseholdService {
 
     // Returns the household for a user — throws if not found
     Household getHouseholdForUser(CustomUser user);
+
+    void inviteMember(CustomUser inviter, String inviteeEmail);
+    void joinHousehold(CustomUser user, String token);
 }
