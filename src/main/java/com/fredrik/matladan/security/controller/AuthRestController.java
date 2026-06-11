@@ -1,5 +1,7 @@
 package com.fredrik.matladan.security.controller;
+import com.fredrik.matladan.security.dto.ForgotPasswordRequest;
 import com.fredrik.matladan.security.dto.LoginRequest;
+import com.fredrik.matladan.security.dto.ResetPasswordRequest;
 import com.fredrik.matladan.security.dto.VerifyOTPRequest;
 import com.fredrik.matladan.security.jwt.JwtUtils;
 import com.fredrik.matladan.security.service.VerificationService;
@@ -18,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -33,6 +36,7 @@ public class AuthRestController {
     private final CustomUserService userService;
     private final VerificationService verificationService;
     private final CustomUserRepository customUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
 
@@ -54,6 +58,51 @@ public class AuthRestController {
         return ResponseEntity.status(201).body(Map.of(
                 "message", "Account created. Please check your email for a verification code.",
                 "email", responseDTO.email()
+        ));
+    }
+
+    /**
+     * Forgot password — sends OTP to email.
+     * Always returns 200 regardless of whether email exists (security best practice).
+     */
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Map<String, String>> forgotPassword(
+            @Valid @RequestBody ForgotPasswordRequest request
+    ) {
+        String email = request.email().toLowerCase().trim();
+
+        customUserRepository.findByEmail(email).ifPresent(verificationService::sendPasswordResetOtp
+        );
+
+        // Always return same message — don't reveal if email is registered
+        return ResponseEntity.ok(Map.of(
+                "message", "If an account exists with that email, a reset code has been sent."
+        ));
+    }
+
+    /**
+     * Reset password — verifies OTP and updates password.
+     */
+    @PostMapping("/reset-password")
+    public ResponseEntity<Map<String, String>> resetPassword(
+            @Valid @RequestBody ResetPasswordRequest request
+    ) {
+        String email = request.email().toLowerCase().trim();
+
+        // Verify OTP is valid — throws exception if not
+        verificationService.verifyPasswordResetOtp(email, request.otp());
+
+        // Update password
+        CustomUser user = customUserRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(email));
+
+        user.setPasswordHash(passwordEncoder.encode(request.newPassword()));
+        customUserRepository.save(user);
+
+        logger.info("Password reset successful for user {}", email);
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Password updated successfully. You can now log in."
         ));
     }
 
