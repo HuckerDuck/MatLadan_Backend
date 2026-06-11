@@ -56,6 +56,25 @@ public class EmailService {
         sendEmail(toEmail, subject, body);
     }
 
+    public void sendHouseholdInvite(String toEmail, String inviterEmail, String householdName, String token) {
+        String subject = "Du har blivit inbjuden till " + householdName + " på MatLådan";
+        String body = """
+            Hej!
+            
+            %s har bjudit in dig att dela matförråd på MatLådan.
+            
+            Använd den här koden för att gå med:
+            
+            %s
+            
+            Koden är giltig i 24 timmar.
+            
+            Hälsningar,
+            MatLådan
+            """.formatted(inviterEmail, token);
+        sendEmail(toEmail, subject, body);
+    }
+
     private void sendEmail(String to, String subject, String body) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -70,4 +89,6 @@ public class EmailService {
             throw new RuntimeException("Could not send email. Please try again later.");
         }
     }
+
+
 }
