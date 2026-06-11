@@ -1,5 +1,6 @@
 package com.fredrik.matladan.item.repository;
 
+import com.fredrik.matladan.household.model.Household;
 import com.fredrik.matladan.item.entity.Item;
 import com.fredrik.matladan.item.enums.StorageLocation;
 import com.fredrik.matladan.user.model.CustomUser;
@@ -35,4 +36,12 @@ public interface ItemRepository extends JpaRepository <Item, Long> {
 
     //? This is used finting all the items that belongs to a specific user
     List<Item> findByStorageOwner(CustomUser storageOwner);
+
+    List<Item> findAllByHousehold(Household household);
+    Page<Item> findAllByHousehold(Household household, Pageable pageable);
+    List<Item> findAllByHouseholdAndStorageLocation(Household household, StorageLocation location);
+    Page<Item> findAllByHouseholdAndStorageLocation(Household household, StorageLocation location, Pageable pageable);
+    List<Item> findAllByHouseholdAndNameContainingIgnoreCase(Household household, String name);
+    Page<Item> findAllByHouseholdAndNameContainingIgnoreCase(Household household, String name, Pageable pageable);
+    Optional<Item> findByIdAndHousehold(Long id, Household household);
 }

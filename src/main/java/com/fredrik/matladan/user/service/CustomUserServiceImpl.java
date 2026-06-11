@@ -1,13 +1,14 @@
 package com.fredrik.matladan.user.service;
 
+import com.fredrik.matladan.household.service.HouseholdService;
 import com.fredrik.matladan.user.dto.CreateUserDTO;
 import com.fredrik.matladan.user.dto.CustomUserResponseDTO;
 import com.fredrik.matladan.user.exceptions.EmailAlreadyExistsException;
-import com.fredrik.matladan.user.exceptions.UserAlreadyExistsException;
 import com.fredrik.matladan.user.exceptions.UserNotFoundException;
 import com.fredrik.matladan.user.mapper.CustomUserMapper;
 import com.fredrik.matladan.user.model.CustomUser;
 import com.fredrik.matladan.user.repository.CustomUserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,16 +18,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class CustomUserServiceImpl implements CustomUserService{
     private final CustomUserRepository repository;
     private final CustomUserMapper mapper;
     private final PasswordEncoder passwordEncoder;
+    private final HouseholdService householdService;
 
-    public CustomUserServiceImpl(CustomUserRepository repository, CustomUserMapper mapper, PasswordEncoder passwordEncoder) {
-        this.repository = repository;
-        this.mapper = mapper;
-        this.passwordEncoder = passwordEncoder;
-    }
+
 
     //?
     //? Create a User
@@ -61,9 +60,9 @@ public class CustomUserServiceImpl implements CustomUserService{
         customUser.setEnabled(false);
         CustomUser savedUser = repository.save(customUser);
 
-        //? Mapper Entity -> Response DTO
-        //? This is used to return a safe response to the client
-        //? The password is not returned to the client
+        // Automatically create a household for the new user
+        householdService.createHouseholdForUser(savedUser);
+
         return mapper.toResponseDTO(savedUser);
     }
 

@@ -56,10 +56,14 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/refresh").permitAll()
                         .requestMatchers("/api/auth/logout").permitAll()
 
+                        // Has to be logged in
+                        .requestMatchers("/api/households/**").authenticated()
+
                         // Has to have the role of admin
                         .requestMatchers("/api/users/{username}").hasRole("ADMIN")
                         .requestMatchers("/api/users/getallusers").hasRole("ADMIN")
 
+                        // Any other request then open, has to be logged in
                         .anyRequest().authenticated()
                 )
 
